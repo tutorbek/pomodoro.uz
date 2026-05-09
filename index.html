@@ -1,0 +1,1652 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>pomodoro.uz</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@200;300;400&family=DM+Sans:wght@400;500;600&family=Outfit:wght@700&display=swap"
+    rel="stylesheet">
+  <script>
+    const savedTheme = localStorage.getItem('pomodo_theme');
+    if (savedTheme === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    }
+  </script>
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --primary-grad: linear-gradient(135deg, #6C63FF, #48CAE4);
+      --secondary-grad: linear-gradient(135deg, #FF6B6B, #FFE66D);
+      --text-main: #0D0D0D;
+      --text-sub: #6B7280;
+      --bg-main: #FFFFFF;
+      --bg-card: #FFFFFF;
+      --bg-surface: #F4F4F6;
+      --border: #E5E7EB;
+
+      --radius-card: 20px;
+      --radius-btn: 14px;
+      --radius-pill: 50px;
+      --radius-modal: 24px;
+
+      --shadow-subtle: 0 8px 40px rgba(0, 0, 0, 0.07);
+      --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    :root[data-theme="dark"] {
+      --text-main: #F3F4F6;
+      --text-sub: #9CA3AF;
+      --bg-main: #121212;
+      --bg-card: #1E1E1E;
+      --bg-surface: #2A2A2A;
+      --border: #3A3A3A;
+      --shadow-subtle: 0 8px 40px rgba(0, 0, 0, 0.4);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg-main);
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 580px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 2.5rem 1.5rem;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .logo {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .logo-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main);
+      letter-spacing: -0.5px;
+    }
+
+    .logo-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--text-main);
+      transition: all 0.2s var(--spring);
+    }
+
+    .icon-btn:hover {
+      background: #E5E7EB;
+      transform: translateY(-2px);
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-subtle);
+      padding: 2.5rem;
+      position: relative;
+    }
+
+    /* TABS */
+    .tabs-container {
+      display: flex;
+      position: relative;
+      background: var(--bg-surface);
+      border-radius: var(--radius-pill);
+      padding: 6px;
+      margin: 0 auto 32px;
+      max-width: 380px;
+    }
+
+    .tab-indicator {
+      position: absolute;
+      top: 6px;
+      bottom: 6px;
+      border-radius: var(--radius-pill);
+      background: var(--primary-grad);
+      transition: all 0.2s ease;
+      z-index: 1;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 12px 0;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-sub);
+      z-index: 2;
+      cursor: pointer;
+      transition: color 0.2s ease;
+      border-radius: var(--radius-pill);
+    }
+
+    .tab-btn.active {
+      color: #FFFFFF;
+    }
+
+    /* TIMER */
+    .timer-section {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+
+    .timer-wrapper {
+      position: relative;
+      display: inline-block;
+    }
+
+    .timer-display {
+      font-family: 'DM Mono', monospace;
+      font-size: clamp(80px, 18vw, 120px);
+      font-weight: 200;
+      color: var(--text-main);
+      line-height: 1;
+      margin: 16px 0;
+      position: relative;
+      z-index: 2;
+      letter-spacing: -2px;
+    }
+
+    .timer-glow {
+      position: absolute;
+      bottom: 12%;
+      left: 10%;
+      right: 10%;
+      height: 16px;
+      background: var(--primary-grad);
+      filter: blur(16px);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+      z-index: 1;
+      border-radius: 50px;
+    }
+
+    .timer-wrapper.running .timer-glow {
+      opacity: 0.3;
+    }
+
+    .session-label {
+      font-size: 15px;
+      color: var(--text-sub);
+      margin-top: 8px;
+    }
+
+    /* POMODORO DOTS */
+    .pomodoro-dots {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 40px;
+      flex-wrap: wrap;
+    }
+
+    .pom-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: var(--radius-pill);
+      background: var(--border);
+      transition: all 0.3s var(--spring);
+    }
+
+    .pom-dot.current {
+      width: 28px;
+      background: var(--bg-surface);
+      border: 2px solid var(--border);
+    }
+
+    .pom-dot.done {
+      background: var(--secondary-grad);
+      border: none;
+    }
+
+    @keyframes popIn {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.3);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .pom-dot.just-done {
+      animation: popIn 0.3s var(--spring);
+    }
+
+    /* CONTROLS */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .btn-primary {
+      background: var(--primary-grad);
+      color: white;
+      border-radius: var(--radius-pill);
+      padding: 16px 48px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(108, 99, 255, 0.25);
+      transition: transform 0.2s var(--spring), box-shadow 0.2s ease;
+      min-width: 140px;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(108, 99, 255, 0.35);
+    }
+
+    .btn-pause {
+      position: relative;
+      background: var(--bg-card);
+      color: var(--text-main);
+      border: none;
+      padding: 16px 48px;
+      border-radius: var(--radius-pill);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      z-index: 1;
+      transition: transform 0.2s var(--spring), box-shadow 0.2s ease;
+      min-width: 140px;
+    }
+
+    .btn-pause::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: var(--radius-pill);
+      padding: 2px;
+      background: var(--primary-grad);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      z-index: -1;
+    }
+
+    .btn-pause:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(108, 99, 255, 0.15);
+    }
+
+    .btn-reset {
+      background: transparent;
+      color: var(--text-sub);
+      border: none;
+      font-size: 15px;
+      font-weight: 500;
+      padding: 16px 24px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      transition: color 0.2s ease, transform 0.2s var(--spring);
+    }
+
+    .btn-reset:hover {
+      color: var(--text-main);
+      transform: translateY(-2px);
+    }
+
+    /* STATS */
+    .stats-row {
+      display: flex;
+      justify-content: space-around;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .stat-box {
+      text-align: center;
+    }
+
+    .stat-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 24px;
+      font-weight: 400;
+      color: var(--text-main);
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 4px;
+    }
+
+    /* TASKS */
+    .tasks-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .tasks-header h3 {
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .text-btn {
+      background: none;
+      border: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+      cursor: pointer;
+      transition: color 0.2s ease;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .text-btn:hover {
+      color: var(--text-main);
+      background: var(--bg-surface);
+    }
+
+    .text-btn.danger:hover {
+      color: #FF6B6B;
+      background: rgba(255, 107, 107, 0.1);
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .task-empty {
+      text-align: center;
+      padding: 32px 0;
+      color: var(--text-sub);
+      font-size: 15px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 0;
+      border-bottom: 1px solid var(--bg-surface);
+      animation: taskSlide 0.4s var(--spring);
+    }
+
+    @keyframes taskSlide {
+      from {
+        opacity: 0;
+        transform: translateY(-12px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .task-item:last-child {
+      border-bottom: none;
+    }
+
+    .task-check {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .task-check.checked {
+      border-color: transparent;
+      background: var(--primary-grad);
+      animation: checkPop 0.3s var(--spring);
+    }
+
+    @keyframes checkPop {
+      0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+
+      50% {
+        transform: scale(1.15);
+        opacity: 1;
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 16px;
+      color: var(--text-main);
+      position: relative;
+      display: inline-block;
+      transition: opacity 0.4s ease;
+    }
+
+    .task-text-inner {
+      position: relative;
+      display: inline;
+    }
+
+    .task-text-inner::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 0;
+      height: 1.5px;
+      background: var(--text-sub);
+      transition: width 0.4s ease;
+    }
+
+    .task-item.done .task-text {
+      opacity: 0.4;
+    }
+
+    .task-item.done .task-text-inner::after {
+      width: 100%;
+    }
+
+    .task-del {
+      background: none;
+      border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      transition: color 0.2s ease;
+    }
+
+    .task-del:hover {
+      color: #FF6B6B;
+    }
+
+    /* MODALS */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(13, 13, 13, 0.4);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-content {
+      background: var(--bg-card);
+      border-radius: var(--radius-modal);
+      width: 100%;
+      max-width: 440px;
+      padding: 32px;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.1);
+      transform: scale(0.94) translateY(12px);
+      transition: transform 0.4s var(--spring);
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.open .modal-content {
+      transform: scale(1) translateY(0);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: none;
+      font-size: 16px;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .modal-close:hover {
+      background: #E5E7EB;
+      color: var(--text-main);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 14px 16px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      font-size: 15px;
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-main);
+      background: var(--bg-surface);
+      transition: all 0.2s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #6C63FF;
+      background: var(--bg-card);
+    }
+
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
+
+    .form-row .form-group {
+      flex: 1;
+    }
+
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 32px;
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius-btn);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-secondary:hover {
+      background: #E5E7EB;
+    }
+
+    .btn-primary-small {
+      background: var(--primary-grad);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--radius-btn);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+      transition: all 0.2s var(--spring);
+    }
+
+    .btn-primary-small:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(108, 99, 255, 0.3);
+    }
+
+    /* Sound Selector */
+    .sound-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .sound-card {
+      position: relative;
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: 16px 8px;
+      text-align: center;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    .sound-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      padding: 2px;
+      background: var(--border);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      transition: background 0.3s ease;
+      z-index: -1;
+    }
+
+    .sound-card.selected::before {
+      background: var(--primary-grad);
+    }
+
+    .sound-icon {
+      font-size: 24px;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .sound-name {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-sub);
+    }
+
+    .sound-card.selected .sound-name {
+      color: var(--text-main);
+    }
+
+    .sound-preview-btn {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 10px;
+      cursor: pointer;
+      color: var(--text-sub);
+      transition: all 0.2s ease;
+    }
+
+    .sound-preview-btn:hover {
+      background: #E5E7EB;
+      color: var(--text-main);
+    }
+
+    /* Volume Slider */
+    .volume-control {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-top: 8px;
+    }
+
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--bg-surface);
+      border-radius: 50px;
+      outline: none;
+    }
+
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6C63FF, #48CAE4);
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(108, 99, 255, 0.3);
+      transition: transform 0.2s var(--spring);
+    }
+
+    input[type=range]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    .vol-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 14px;
+      color: var(--text-sub);
+      min-width: 40px;
+    }
+
+    /* Pomodoro Picker */
+    .pom-picker {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 32px;
+      margin: 32px 0;
+    }
+
+    .pom-picker-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--bg-surface);
+      border: none;
+      font-size: 24px;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s var(--spring);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .pom-picker-btn:hover {
+      background: #E5E7EB;
+      transform: scale(1.05);
+    }
+
+    .pom-picker-val {
+      font-family: 'DM Mono', monospace;
+      font-size: 48px;
+      font-weight: 300;
+      color: #6C63FF;
+    }
+
+    .pom-picker-hint {
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-sub);
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: auto;
+      font-size: 13px;
+      color: var(--text-sub);
+    }
+
+    .footer a {
+      color: var(--text-main);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    /* Responsive */
+    @media (max-width: 480px) {
+      .wrapper {
+        padding: 1.5rem 1rem;
+      }
+
+      .card {
+        padding: 2rem 1.5rem;
+      }
+
+      .timer-display {
+        font-size: clamp(72px, 18vw, 96px);
+      }
+
+      .btn-primary,
+      .btn-pause {
+        padding: 16px 32px;
+        min-width: 120px;
+      }
+
+      .btn-reset {
+        padding: 16px 16px;
+      }
+
+      .hide-mobile {
+        display: none;
+      }
+
+      .form-row {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- HEADER -->
+    <header class="header">
+      <div class="logo">
+        <h1 class="logo-title">pomodoro.uz</h1>
+        <p class="logo-sub">Your focus timer ⏱️</p>
+      </div>
+      <div class="header-actions">
+        <button class="icon-btn" onclick="openModal('pomModal')" title="Set pomodoro count">🍅</button>
+        <button class="icon-btn" onclick="openModal('settingsModal')" title="Settings">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z">
+            </path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- MAIN TIMER CARD -->
+    <main class="card">
+      <div class="tabs-container">
+        <div class="tab-indicator" id="tabIndicator"></div>
+        <button class="tab-btn active" id="tabPomodoro" onclick="switchTab('pomodoro')">Pomodoro</button>
+        <button class="tab-btn" id="tabShortBreak" onclick="switchTab('shortBreak')">Short <span
+            class="hide-mobile">Break</span></button>
+        <button class="tab-btn" id="tabLongBreak" onclick="switchTab('longBreak')">Long <span
+            class="hide-mobile">Break</span></button>
+      </div>
+
+      <div class="timer-section">
+        <div class="timer-wrapper" id="timerWrapper">
+          <div class="timer-display" id="timerDisplay">25:00</div>
+          <div class="timer-glow"></div>
+        </div>
+        <div class="session-label" id="sessionLabel">Time to focus!</div>
+      </div>
+
+      <div class="pomodoro-dots" id="pomDots"></div>
+
+      <div class="controls">
+        <button class="btn-primary" id="startBtn" onclick="toggleTimer()">START</button>
+        <button class="btn-reset" id="resetBtn" onclick="resetTimer()">Reset</button>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-box">
+          <div class="stat-val" id="sessionsCompleted">0</div>
+          <div class="stat-label">Your's pomodoro count 🍅</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="totalFocus">0m</div>
+          <div class="stat-label">Your's focused time</div>
+        </div>
+      </div>
+    </main>
+
+    <!-- TASKS CARD -->
+    <section class="card">
+      <div class="tasks-header">
+        <h3>Tasks</h3>
+        <div class="task-actions">
+          <button class="text-btn" onclick="openModal('addTaskModal')">+ Add</button>
+          <button class="text-btn" onclick="clearFinishedTasks()">Clear Done</button>
+          <button class="text-btn danger" onclick="clearAllTasks()">Clear All</button>
+        </div>
+      </div>
+      <div class="task-list" id="taskList">
+        <div class="task-empty">No tasks yet — enjoy the freedom! 🎉</div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Made with 🥷🏻 by <a href="https://t.me/tutorbek" target="_blank">tutorbek シ</a>
+    </footer>
+  </div>
+
+  <!-- ADD TASK MODAL -->
+  <div class="modal-overlay" id="addTaskModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Add new task</h2>
+        <button class="modal-close" onclick="closeModal('addTaskModal')">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Task name</label>
+        <input type="text" class="form-input" id="taskModalInput" placeholder="What needs to be done...">
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('addTaskModal')">Cancel</button>
+        <button class="btn-primary-small" onclick="addTaskFromModal()">Add Task</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POMODORO MODAL -->
+  <div class="modal-overlay" id="pomModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Pomodoro count</h2>
+        <button class="modal-close" onclick="closeModal('pomModal')">✕</button>
+      </div>
+      <p style="color:var(--text-sub); font-size: 15px;">How many Pomodoros do you want to complete today?</p>
+      <div class="pom-picker">
+        <button class="pom-picker-btn" onclick="changePomTarget(-1)">−</button>
+        <div class="pom-picker-val" id="pomPickerVal">4</div>
+        <button class="pom-picker-btn" onclick="changePomTarget(1)">+</button>
+      </div>
+      <div class="pom-picker-hint" id="pomPickerTime">= ~100 min of focus</div>
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('pomModal')">Cancel</button>
+        <button class="btn-primary-small" onclick="savePomTarget()">Save Target</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS MODAL -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button class="modal-close" onclick="closeModal('settingsModal')">✕</button>
+      </div>
+
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">Appearance & Data</h3>
+      <div class="form-row" style="align-items: center; margin-bottom: 12px;">
+        <div style="flex: 1;">
+          <span style="font-size:14px; font-weight:500; color:var(--text-sub);">Theme</span>
+        </div>
+        <button class="btn-secondary" id="themeBtn" onclick="toggleTheme()"
+          style="padding: 8px 16px; min-width: 130px;">🌙 Dark Mode</button>
+      </div>
+
+      <div class="form-row" style="align-items: center; margin-bottom: 24px;">
+        <div style="flex: 1;">
+          <span style="font-size:14px; font-weight:500; color:var(--text-sub);">Factory Reset</span>
+        </div>
+        <button class="btn-secondary" onclick="clearLocalStorage()"
+          style="padding: 8px 16px; min-width: 130px; color: #FF6B6B;">Clear Data</button>
+      </div>
+
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">Timer Durations (minutes)
+      </h3>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Pomodoro</label>
+          <input type="number" class="form-input" id="setPomodoro" min="1" max="60" value="25">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Short Break</label>
+          <input type="number" class="form-input" id="setShortBreak" min="1" max="30" value="5">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Long Break</label>
+        <input type="number" class="form-input" id="setLongBreak" min="1" max="60" value="15">
+      </div>
+
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Alarm Sound</h3>
+      <div class="sound-grid" id="soundGrid"></div>
+
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Volume</h3>
+      <div class="volume-control">
+        <span style="font-size:18px;">🔈</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70" oninput="updateVolLabel()">
+        <span style="font-size:18px;">🔊</span>
+        <span class="vol-val" id="volLabel">70%</span>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn-secondary" onclick="closeModal('settingsModal')">Cancel</button>
+        <button class="btn-primary-small" onclick="saveSettings()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // CONSTANTS
+    const SOUNDS = [
+      { id: 'bell', name: 'Bell', icon: '🔔' },
+      { id: 'bird', name: 'Bird', icon: '🐦' },
+      { id: 'digital', name: 'Digital', icon: '📡' },
+      { id: 'kitchen', name: 'Kitchen', icon: '🍳' },
+      { id: 'wood', name: 'Wood', icon: '🥁' },
+    ];
+
+    const TAB_LABELS = {
+      pomodoro: 'Time to focus!',
+      shortBreak: 'Take a short break',
+      longBreak: 'Take a long break',
+    };
+
+    // SETTINGS
+    let settings = {
+      pomodoroTime: 25,
+      shortBreakTime: 5,
+      longBreakTime: 15,
+      alarmSound: 'bell',
+      volume: 70,
+    };
+
+    // STATE
+    let state = {
+      currentTab: 'pomodoro',
+      timeLeft: 25 * 60,
+      totalTime: 25 * 60,
+      isRunning: false,
+      sessionsCompleted: 0,
+      totalFocusTime: 0,
+      pomTarget: 4,
+      pomTempTarget: 4,
+      tasks: [],
+    };
+    let timerInterval = null;
+
+    // AUDIO CONTEXT
+    let audioCtx = null;
+    function getCtx() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      return audioCtx;
+    }
+
+    // PREMIUM BUTTON CLICK SOUND
+    function playClick() {
+      try {
+        const ctx = getCtx();
+        const t = ctx.currentTime;
+
+        const osc1 = ctx.createOscillator();
+        const gain1 = ctx.createGain();
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(300, t);
+        osc1.frequency.exponentialRampToValueAtTime(600, t + 0.04);
+
+        const osc2 = ctx.createOscillator();
+        const gain2 = ctx.createGain();
+        osc2.type = 'sine';
+        osc2.frequency.setValueAtTime(450, t);
+        osc2.frequency.exponentialRampToValueAtTime(900, t + 0.04);
+
+        const delay = ctx.createDelay();
+        delay.delayTime.value = 0.03;
+        const feedback = ctx.createGain();
+        feedback.gain.value = 0.2;
+        delay.connect(feedback);
+        feedback.connect(delay);
+
+        const outGain = ctx.createGain();
+
+        osc1.connect(gain1);
+        osc2.connect(gain2);
+
+        gain1.connect(outGain);
+        gain2.connect(outGain);
+
+        outGain.connect(ctx.destination);
+        outGain.connect(delay);
+        delay.connect(ctx.destination);
+
+        gain1.gain.setValueAtTime(0, t);
+        gain1.gain.linearRampToValueAtTime(0.4, t + 0.01);
+        gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+        gain2.gain.setValueAtTime(0, t);
+        gain2.gain.linearRampToValueAtTime(0.1, t + 0.01);
+        gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+
+        osc1.start(t); osc1.stop(t + 0.1);
+        osc2.start(t); osc2.stop(t + 0.1);
+      } catch (e) { console.error(e); }
+    }
+
+    // ALARM SOUNDS
+    function playAlarm(soundId, vol) {
+      const ctx = getCtx();
+      const v = ((vol !== undefined ? vol : settings.volume) / 100);
+      try {
+        ({
+          bell: () => {
+            [0, 0.4, 0.8].forEach((offset, i) => {
+              const t = ctx.currentTime + offset;
+              const osc = ctx.createOscillator();
+              const lfo = ctx.createOscillator();
+              const lfoGain = ctx.createGain();
+              const gain = ctx.createGain();
+
+              osc.type = 'sine';
+              osc.frequency.value = 880;
+
+              lfo.type = 'sine';
+              lfo.frequency.value = 6;
+              lfoGain.gain.value = 10;
+              lfo.connect(lfoGain);
+              lfoGain.connect(osc.frequency);
+
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+
+              gain.gain.setValueAtTime(0, t);
+              gain.gain.linearRampToValueAtTime(v * 0.6, t + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 1.5);
+
+              osc.start(t); osc.stop(t + 1.6);
+              lfo.start(t); lfo.stop(t + 1.6);
+            });
+          },
+          bird: () => {
+            for (let i = 0; i < 5; i++) {
+              const t = ctx.currentTime + i * 0.15;
+              const osc1 = ctx.createOscillator();
+              const osc2 = ctx.createOscillator();
+              const panner1 = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+              const panner2 = ctx.createStereoPanner ? ctx.createStereoPanner() : ctx.createGain();
+              const gain = ctx.createGain();
+
+              osc1.type = 'sine';
+              osc2.type = 'sine';
+
+              const baseFreq = 1500 + i * 100;
+              osc1.frequency.setValueAtTime(baseFreq, t);
+              osc1.frequency.exponentialRampToValueAtTime(baseFreq + 600, t + 0.1);
+
+              osc2.frequency.setValueAtTime(baseFreq + 10, t);
+              osc2.frequency.exponentialRampToValueAtTime(baseFreq + 615, t + 0.1);
+
+              if (panner1.pan) {
+                panner1.pan.value = -0.5;
+                panner2.pan.value = 0.5;
+              }
+
+              osc1.connect(panner1); panner1.connect(gain);
+              osc2.connect(panner2); panner2.connect(gain);
+              gain.connect(ctx.destination);
+
+              gain.gain.setValueAtTime(0, t);
+              gain.gain.linearRampToValueAtTime(v * 0.3, t + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.12);
+
+              osc1.start(t); osc1.stop(t + 0.15);
+              osc2.start(t); osc2.stop(t + 0.15);
+            }
+          },
+          digital: () => {
+            for (let i = 0; i < 4; i++) {
+              const t = ctx.currentTime + i * 0.15;
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'square';
+              osc.frequency.value = 1200;
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              gain.gain.setValueAtTime(0, t);
+              gain.gain.setValueAtTime(v * 0.15, t + 0.01);
+              gain.gain.setValueAtTime(0, t + 0.08);
+              osc.start(t); osc.stop(t + 0.09);
+            }
+          },
+          kitchen: () => {
+            [0, 0.15, 0.3, 0.45, 0.6].forEach(offset => {
+              const t = ctx.currentTime + offset;
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'triangle';
+              osc.frequency.value = 660;
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              gain.gain.setValueAtTime(0, t);
+              gain.gain.linearRampToValueAtTime(v * 0.5, t + 0.01);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+              osc.start(t); osc.stop(t + 0.12);
+            });
+          },
+          wood: () => {
+            [0, 0.25, 0.5].forEach(offset => {
+              const t = ctx.currentTime + offset;
+              const bufferSize = ctx.sampleRate * 0.1;
+              const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+              const data = buffer.getChannelData(0);
+              for (let i = 0; i < bufferSize; i++) {
+                data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (ctx.sampleRate * 0.02));
+              }
+              const noise = ctx.createBufferSource();
+              noise.buffer = buffer;
+
+              const filter = ctx.createBiquadFilter();
+              filter.type = 'bandpass';
+              filter.frequency.value = 350;
+              filter.Q.value = 5;
+
+              const gain = ctx.createGain();
+
+              noise.connect(filter);
+              filter.connect(gain);
+              gain.connect(ctx.destination);
+
+              gain.gain.setValueAtTime(0, t);
+              gain.gain.linearRampToValueAtTime(v * 1.5, t + 0.01);
+              gain.gain.exponentialRampToValueAtTime(0.001, t + 0.1);
+
+              noise.start(t);
+            });
+          },
+        }[soundId] || (() => { }))();
+      } catch (e) { console.error(e); }
+    }
+
+    // TIMER LOGIC
+    function getTabTime(tab) {
+      return {
+        pomodoro: settings.pomodoroTime,
+        shortBreak: settings.shortBreakTime,
+        longBreak: settings.longBreakTime,
+      }[tab || state.currentTab] * 60;
+    }
+
+    function updateTabIndicator() {
+      const activeTab = document.querySelector('.tab-btn.active');
+      const indicator = document.getElementById('tabIndicator');
+      if (activeTab && indicator) {
+        indicator.style.width = activeTab.offsetWidth + 'px';
+        indicator.style.left = activeTab.offsetLeft + 'px';
+      }
+    }
+
+    function switchTab(tab) {
+      state.currentTab = tab;
+      state.isRunning = false;
+      clearInterval(timerInterval); timerInterval = null;
+      state.timeLeft = getTabTime(tab);
+      state.totalTime = state.timeLeft;
+
+      const btn = document.getElementById('startBtn');
+      btn.textContent = 'START';
+      btn.className = 'btn-primary';
+      document.getElementById('timerWrapper').classList.remove('running');
+
+      ['tabPomodoro', 'tabShortBreak', 'tabLongBreak'].forEach(id => document.getElementById(id).classList.remove('active'));
+      const idMap = { pomodoro: 'tabPomodoro', shortBreak: 'tabShortBreak', longBreak: 'tabLongBreak' };
+      document.getElementById(idMap[tab]).classList.add('active');
+
+      updateTabIndicator();
+
+      document.getElementById('sessionLabel').textContent = TAB_LABELS[tab];
+      updateDisplay();
+    }
+
+    function toggleTimer() {
+      playClick();
+      state.isRunning = !state.isRunning;
+      const btn = document.getElementById('startBtn');
+      if (state.isRunning) {
+        btn.textContent = 'PAUSE';
+        btn.className = 'btn-pause';
+        document.getElementById('timerWrapper').classList.add('running');
+        timerInterval = setInterval(tick, 1000);
+      } else {
+        btn.textContent = state.timeLeft < state.totalTime ? 'RESUME' : 'START';
+        btn.className = 'btn-primary';
+        document.getElementById('timerWrapper').classList.remove('running');
+        clearInterval(timerInterval); timerInterval = null;
+      }
+    }
+
+    function tick() {
+      if (state.timeLeft <= 0) return;
+      state.timeLeft--;
+      if (state.currentTab === 'pomodoro') state.totalFocusTime++;
+      updateDisplay();
+      saveState();
+
+      if (state.timeLeft <= 0) {
+        clearInterval(timerInterval); timerInterval = null;
+        state.isRunning = false;
+        document.getElementById('timerWrapper').classList.remove('running');
+        playAlarm(settings.alarmSound, settings.volume);
+
+        if (state.currentTab === 'pomodoro') {
+          state.sessionsCompleted++;
+          renderPomDots((state.sessionsCompleted - 1) % state.pomTarget);
+          setTimeout(() => renderPomDots(), 2000);
+
+          if (state.sessionsCompleted > 0 && state.sessionsCompleted % state.pomTarget === 0) {
+            switchTab('longBreak');
+          } else {
+            switchTab('shortBreak');
+          }
+        } else {
+          switchTab('pomodoro');
+          renderPomDots();
+        }
+
+        saveState();
+      }
+    }
+
+    function resetTimer() {
+      playClick();
+      clearInterval(timerInterval); timerInterval = null;
+      state.isRunning = false;
+      state.timeLeft = getTabTime();
+      state.totalTime = state.timeLeft;
+      const btn = document.getElementById('startBtn');
+      btn.textContent = 'START';
+      btn.className = 'btn-primary';
+      document.getElementById('timerWrapper').classList.remove('running');
+      document.getElementById('sessionLabel').textContent = TAB_LABELS[state.currentTab];
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      const min = Math.floor(state.timeLeft / 60);
+      const sec = state.timeLeft % 60;
+      document.getElementById('timerDisplay').textContent =
+        String(min).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+
+      const h = Math.floor(state.totalFocusTime / 3600);
+      const m = Math.floor((state.totalFocusTime % 3600) / 60);
+      document.getElementById('totalFocus').textContent = h > 0 ? h + 'h ' + m + 'm' : m + 'm';
+      document.getElementById('sessionsCompleted').textContent = state.sessionsCompleted;
+    }
+
+    // POMODORO DOTS
+    function renderPomDots(animateIndex = -1) {
+      const container = document.getElementById('pomDots');
+      const cycleCompleted = state.sessionsCompleted % state.pomTarget;
+      const allDoneInCycle = state.sessionsCompleted > 0 && cycleCompleted === 0;
+      let html = '';
+      for (let i = 0; i < state.pomTarget; i++) {
+        let classes = ['pom-dot'];
+        if (allDoneInCycle || i < cycleCompleted) {
+          classes.push('done');
+          if (i === animateIndex) classes.push('just-done');
+        } else if (i === cycleCompleted) {
+          classes.push('current');
+        }
+        html += `<div class="${classes.join(' ')}"></div>`;
+      }
+      container.innerHTML = html;
+    }
+
+    // TASKS
+    function clearFinishedTasks() {
+      const before = state.tasks.length;
+      state.tasks = state.tasks.filter(t => !t.done);
+      if (state.tasks.length !== before) { renderTasks(); saveTasks(); }
+    }
+
+    function clearAllTasks() {
+      if (!state.tasks.length) return;
+      state.tasks = [];
+      renderTasks(); saveTasks();
+    }
+
+    function renderTasks() {
+      const list = document.getElementById('taskList');
+      if (!state.tasks.length) {
+        list.innerHTML = '<div class="task-empty">No tasks yet — enjoy the freedom! 🎉</div>';
+        return;
+      }
+      list.innerHTML = state.tasks.map((t, i) => `
+        <div class="task-item ${t.done ? 'done' : ''}">
+          <div class="task-check ${t.done ? 'checked' : ''}" onclick="toggleTask(${i})">
+            ${t.done ? '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><polyline points="20 6 9 17 4 12"></polyline></svg>' : ''}
+          </div>
+          <div class="task-text"><span class="task-text-inner">${escHtml(t.text)}</span></div>
+          <button class="task-del" onclick="removeTask(${i})">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function escHtml(s) {
+      return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function toggleTask(i) {
+      state.tasks[i].done = !state.tasks[i].done;
+      renderTasks(); saveTasks();
+    }
+
+    function removeTask(i) {
+      state.tasks.splice(i, 1);
+      renderTasks(); saveTasks();
+    }
+
+    // MODALS
+    function openModal(id) {
+      if (id === 'settingsModal') populateSettings();
+      if (id === 'pomModal') {
+        state.pomTempTarget = state.pomTarget;
+        document.getElementById('pomPickerVal').textContent = state.pomTempTarget;
+        updatePomTimeHint();
+      }
+      if (id === 'addTaskModal') {
+        document.getElementById('taskModalInput').value = '';
+        setTimeout(() => document.getElementById('taskModalInput').focus(), 120);
+      }
+      document.getElementById(id).classList.add('open');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove('open');
+    }
+
+    document.querySelectorAll('.modal-overlay').forEach(o => {
+      o.addEventListener('mousedown', e => { if (e.target === o) closeModal(o.id); });
+    });
+    document.addEventListener('keydown', e => {
+      if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      if (e.key === 'Enter' && !e.shiftKey) {
+        if (document.getElementById('addTaskModal').classList.contains('open')) {
+          e.preventDefault(); addTaskFromModal();
+        } else if (document.getElementById('settingsModal').classList.contains('open')) {
+          e.preventDefault(); saveSettings();
+        } else if (document.getElementById('pomModal').classList.contains('open')) {
+          e.preventDefault(); savePomTarget();
+        }
+      }
+    });
+
+    function addTaskFromModal() {
+      const input = document.getElementById('taskModalInput');
+      const text = input.value.trim();
+      if (!text) return;
+      state.tasks.push({ text, done: false });
+      input.value = '';
+      renderTasks(); saveTasks();
+      closeModal('addTaskModal');
+    }
+
+    // POMODORO PICKER
+    function changePomTarget(d) {
+      state.pomTempTarget = Math.max(1, Math.min(20, state.pomTempTarget + d));
+      document.getElementById('pomPickerVal').textContent = state.pomTempTarget;
+      updatePomTimeHint();
+    }
+
+    function updatePomTimeHint() {
+      const mins = state.pomTempTarget * settings.pomodoroTime;
+      const h = Math.floor(mins / 60), m = mins % 60;
+      document.getElementById('pomPickerTime').textContent =
+        '= ~' + (h > 0 ? h + 'h ' : '') + m + 'min of focus';
+    }
+
+    function savePomTarget() {
+      state.pomTarget = state.pomTempTarget;
+      renderPomDots(); saveState();
+      closeModal('pomModal');
+    }
+
+    // SETTINGS
+    function populateSettings() {
+      document.getElementById('setPomodoro').value = settings.pomodoroTime;
+      document.getElementById('setShortBreak').value = settings.shortBreakTime;
+      document.getElementById('setLongBreak').value = settings.longBreakTime;
+      document.getElementById('volumeSlider').value = settings.volume;
+      document.getElementById('volLabel').textContent = settings.volume + '%';
+      renderSoundGrid();
+    }
+
+    function renderSoundGrid() {
+      document.getElementById('soundGrid').innerHTML = SOUNDS.map(s => `
+        <div class="sound-card ${settings.alarmSound === s.id ? 'selected' : ''}" onclick="selectSound('${s.id}')">
+          <div class="sound-icon">${s.icon}</div>
+          <div class="sound-name">${s.name}</div>
+          <button class="sound-preview-btn" onclick="event.stopPropagation(); playAlarm('${s.id}')">▶</button>
+        </div>
+      `).join('');
+    }
+
+    function selectSound(id) {
+      settings.alarmSound = id;
+      renderSoundGrid();
+    }
+
+    function updateVolLabel() {
+      settings.volume = parseInt(document.getElementById('volumeSlider').value);
+      document.getElementById('volLabel').textContent = settings.volume + '%';
+    }
+
+    function saveSettings() {
+      settings.pomodoroTime = Math.max(1, Math.min(60, parseInt(document.getElementById('setPomodoro').value) || 25));
+      settings.shortBreakTime = Math.max(1, Math.min(30, parseInt(document.getElementById('setShortBreak').value) || 5));
+      settings.longBreakTime = Math.max(1, Math.min(60, parseInt(document.getElementById('setLongBreak').value) || 15));
+      settings.volume = parseInt(document.getElementById('volumeSlider').value);
+      localStorage.setItem('pomodo_settings', JSON.stringify(settings));
+      if (!state.isRunning) {
+        state.timeLeft = getTabTime();
+        state.totalTime = state.timeLeft;
+        updateDisplay();
+      }
+      closeModal('settingsModal');
+    }
+
+    // PERSISTENCE
+    function saveState() {
+      localStorage.setItem('pomodo_state', JSON.stringify({
+        sessionsCompleted: state.sessionsCompleted,
+        totalFocusTime: state.totalFocusTime,
+        pomTarget: state.pomTarget,
+        date: new Date().toDateString(),
+      }));
+    }
+
+    function saveTasks() {
+      localStorage.setItem('pomodo_tasks', JSON.stringify(state.tasks));
+    }
+
+    function loadAll() {
+      try { const s = JSON.parse(localStorage.getItem('pomodo_settings')); if (s) Object.assign(settings, s); } catch (e) { }
+      try {
+        const st = JSON.parse(localStorage.getItem('pomodo_state'));
+        if (st) {
+          if (st.date === new Date().toDateString()) {
+            state.sessionsCompleted = st.sessionsCompleted || 0;
+            state.totalFocusTime = st.totalFocusTime || 0;
+          }
+          state.pomTarget = st.pomTarget || 4;
+        }
+      } catch (e) { }
+      try { const t = JSON.parse(localStorage.getItem('pomodo_tasks')); if (Array.isArray(t)) state.tasks = t; } catch (e) { }
+    }
+
+    // THEME LOGIC
+    function toggleTheme() {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      const newTheme = isDark ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('pomodo_theme', newTheme);
+      updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+      const btn = document.getElementById('themeBtn');
+      if (btn) btn.textContent = theme === 'dark' ? '☀️ Light Mode' : '🌙 Dark Mode';
+    }
+
+    function clearLocalStorage() {
+      if (confirm("Are you sure you want to clear all data? This cannot be undone.")) {
+        localStorage.clear();
+        location.reload();
+      }
+    }
+
+    // INIT
+    function init() {
+      loadAll();
+      state.timeLeft = getTabTime();
+      state.totalTime = state.timeLeft;
+      updateDisplay();
+      renderPomDots();
+      renderTasks();
+      updateTabIndicator();
+      updateThemeIcon(document.documentElement.getAttribute('data-theme') || 'light');
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+    window.addEventListener('resize', updateTabIndicator);
+  </script>
+</body>
+
+</html>
