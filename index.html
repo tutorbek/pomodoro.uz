@@ -1075,7 +1075,7 @@
       </div>
       
       <!-- Hidden iframe container, avoids some browser autoplay blocks by being "visible" but opacity 0.01 -->
-      <div style="position: absolute; width: 50px; height: 50px; top: 0; left: 0; z-index: -10; opacity: 0.01; overflow: hidden; pointer-events: none;">
+      <div id="yt-container" style="position: absolute; width: 1px; height: 1px; top: 0; left: 0; z-index: -10; opacity: 0.01; overflow: hidden;">
         <div id="ytplayer"></div>
       </div>
     </section>
@@ -1611,6 +1611,10 @@
       }
       document.getElementById(id).classList.add('open');
       document.body.classList.add('modal-open');
+
+      if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.BackButton.show();
+      }
     }
 
     function closeModal(id) {
@@ -1618,6 +1622,9 @@
       // Only remove modal-open if no other modals are open
       if (!document.querySelector('.modal-overlay.open')) {
         document.body.classList.remove('modal-open');
+        if (window.Telegram && window.Telegram.WebApp) {
+          window.Telegram.WebApp.BackButton.hide();
+        }
       }
     }
 
@@ -1627,8 +1634,11 @@
     document.addEventListener('keydown', e => {
       if (e.key === 'Escape') {
         const openModals = document.querySelectorAll('.modal-overlay.open');
-        openModals.forEach(m => m.classList.remove('open'));
-        if (openModals.length > 0) document.body.classList.remove('modal-open');
+        if (openModals.length > 0) {
+          e.preventDefault();
+          e.stopPropagation();
+          openModals.forEach(m => closeModal(m.id));
+        }
       }
       if (e.key === 'Enter' && !e.shiftKey) {
         if (document.getElementById('addTaskModal').classList.contains('open')) {
@@ -1790,17 +1800,18 @@
           listType: 'playlist',
           list: 'PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER',
           autoplay: 0,
-          loop: 1, // Sometimes YouTube ignores this for playlists via API, handled manually in onStateChange
+          loop: 1,
           controls: 0,
           showinfo: 0,
           rel: 0,
           modestbranding: 1,
           playsinline: 1,
-          origin: window.location.origin
+          origin: location.protocol + '//' + location.hostname + (location.port ? ':' + location.port : '')
         },
         events: {
           'onReady': onPlayerReady,
-          'onStateChange': onPlayerStateChange
+          'onStateChange': onPlayerStateChange,
+          'onError': (e) => console.log('YT Error:', e)
         }
       });
     }
@@ -1882,7 +1893,13 @@
     // INIT
     function init() {
       if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.expand();
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        tg.BackButton.onClick(() => {
+          const openModalDiv = document.querySelector('.modal-overlay.open');
+          if (openModalDiv) closeModal(openModalDiv.id);
+        });
       }
       loadAll();
       state.timeLeft = getTabTime();
