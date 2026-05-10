@@ -865,6 +865,59 @@
       color: var(--text-sub);
     }
 
+    /* LOFI PLAYER */
+    .lofi-card {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .lofi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .lofi-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lofi-icon {
+      font-size: 28px;
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--bg-surface);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lofi-text h3 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .lofi-text p {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-top: 2px;
+    }
+    .lofi-embed-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 12px;
+      overflow: hidden;
+      background: var(--bg-surface);
+    }
+    .lofi-embed-wrapper iframe {
+      width: 100%;
+      height: 200px;
+      display: block;
+      border: none;
+    }
+
     /* Footer */
     .footer {
       text-align: center;
@@ -1002,6 +1055,23 @@
         </div>
       </div>
     </main>
+
+    <!-- LOFI PLAYER CARD -->
+    <section class="card lofi-card">
+      <div class="lofi-header">
+        <div class="lofi-info">
+          <div class="lofi-icon">🎧</div>
+          <div class="lofi-text">
+            <h3>Lofi Chill Beats</h3>
+            <p>Coding & Focus</p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="lofi-embed-wrapper">
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/n61ULEU7CO0?si=RbErLAPo14JCENyG&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      </div>
+    </section>
 
     <!-- TASKS CARD -->
     <section class="card">
