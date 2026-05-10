@@ -1108,6 +1108,16 @@
         </div>
       </div>
       
+      <div class="lofi-progress" style="display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 4px;">
+        <span id="lofiCurrentTime" style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px; text-align: right;">0:00</span>
+        <input type="range" id="lofiProgressBar" min="0" max="100" value="0" step="1" 
+          oninput="document.getElementById('lofiCurrentTime').textContent = formatLofiTime(this.value); lofiSeeking = true;" 
+          onchange="seekLofi(this.value); lofiSeeking = false;" 
+          onmouseup="lofiSeeking = false;" ontouchend="lofiSeeking = false;"
+          style="flex: 1; height: 4px;">
+        <span id="lofiTotalTime" style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px;">0:00</span>
+      </div>
+
       <div class="lofi-volume">
         <span style="font-size: 16px; color: var(--text-sub);">🔉</span>
         <input type="range" id="lofiVolume" min="0" max="100" value="50" oninput="changeLofiVolume(this.value)">
@@ -1812,6 +1822,8 @@
     let ytPlayer;
     let lofiPlaying = false;
     let isYtReady = false;
+    let lofiSeeking = false;
+    let lofiProgressInterval;
 
     var tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
@@ -1847,6 +1859,7 @@
     function onPlayerReady(event) {
       isYtReady = true;
       ytPlayer.setVolume(document.getElementById('lofiVolume').value);
+      lofiProgressInterval = setInterval(updateLofiProgress, 1000);
     }
 
     function onPlayerStateChange(event) {
@@ -1889,6 +1902,32 @@
     function changeLofiVolume(val) {
       if (!isYtReady) return;
       ytPlayer.setVolume(val);
+    }
+
+    function updateLofiProgress() {
+      if (!isYtReady || !lofiPlaying || lofiSeeking) return;
+      const curr = ytPlayer.getCurrentTime() || 0;
+      const total = ytPlayer.getDuration() || 0;
+      
+      const progressBar = document.getElementById('lofiProgressBar');
+      if (progressBar.max != total) progressBar.max = total;
+      progressBar.value = curr;
+      
+      document.getElementById('lofiCurrentTime').textContent = formatLofiTime(curr);
+      document.getElementById('lofiTotalTime').textContent = formatLofiTime(total);
+    }
+
+    function formatLofiTime(seconds) {
+      if (!seconds || isNaN(seconds)) return "0:00";
+      const m = Math.floor(seconds / 60);
+      const s = Math.floor(seconds % 60);
+      return m + ":" + (s < 10 ? "0" : "") + s;
+    }
+
+    function seekLofi(val) {
+      if (!isYtReady) return;
+      ytPlayer.seekTo(val, true);
+      document.getElementById('lofiCurrentTime').textContent = formatLofiTime(val);
     }
 
     // INIT
