@@ -867,7 +867,7 @@
 
     /* LOFI PLAYER */
     .lofi-card {
-      padding: 1.5rem;
+      padding: 1.5rem 2rem;
       display: flex;
       flex-direction: column;
       gap: 16px;
@@ -904,18 +904,46 @@
       color: var(--text-sub);
       margin-top: 2px;
     }
-    .lofi-embed-wrapper {
-      position: relative;
-      width: 100%;
-      border-radius: 12px;
-      overflow: hidden;
-      background: var(--bg-surface);
+    .lofi-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
-    .lofi-embed-wrapper iframe {
-      width: 100%;
-      height: 200px;
-      display: block;
+    .lofi-btn {
+      background: none;
       border: none;
+      color: var(--text-sub);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+    .lofi-btn:hover {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+    .lofi-btn.play-btn {
+      background: var(--primary-grad);
+      color: white;
+      box-shadow: 0 4px 12px rgba(108, 99, 255, 0.2);
+    }
+    .lofi-btn.play-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 16px rgba(108, 99, 255, 0.3);
+      color: white;
+    }
+    .lofi-volume {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .lofi-volume input[type=range] {
+      flex: 1;
+      height: 4px;
     }
 
     /* Footer */
@@ -1066,10 +1094,28 @@
             <p>Coding & Focus</p>
           </div>
         </div>
+        <div class="lofi-controls">
+          <button class="lofi-btn" id="lofiPrev" onclick="lofiPrev()" title="Previous track">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+          </button>
+          <button class="lofi-btn play-btn" id="lofiPlayPause" onclick="toggleLofi()" title="Play/Pause">
+            <svg id="lofiPlayIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            <svg id="lofiPauseIcon" style="display:none;" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+          </button>
+          <button class="lofi-btn" id="lofiNext" onclick="lofiNext()" title="Next track">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+          </button>
+        </div>
       </div>
       
-      <div class="lofi-embed-wrapper">
-        <iframe width="560" height="315" src="https://www.youtube.com/embed/n61ULEU7CO0?si=RbErLAPo14JCENyG&amp;controls=0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <div class="lofi-volume">
+        <span style="font-size: 16px; color: var(--text-sub);">🔉</span>
+        <input type="range" id="lofiVolume" min="0" max="100" value="50" oninput="changeLofiVolume(this.value)">
+      </div>
+      
+      <!-- Hidden iframe container, avoids some browser autoplay blocks by being "visible" but opacity 0.01 -->
+      <div style="position: absolute; width: 200px; height: 200px; z-index: -10; opacity: 0.01; overflow: hidden; pointer-events: none;">
+        <div id="ytplayer"></div>
       </div>
     </section>
 
@@ -1760,6 +1806,89 @@
         localStorage.clear();
         location.reload();
       }
+    }
+
+    // LOFI PLAYER LOGIC (YOUTUBE IFRAME API)
+    let ytPlayer;
+    let lofiPlaying = false;
+    let isYtReady = false;
+
+    var tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    if (firstScriptTag) {
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    } else {
+      document.head.appendChild(tag);
+    }
+
+    function onYouTubeIframeAPIReady() {
+      ytPlayer = new YT.Player('ytplayer', {
+        height: '200',
+        width: '200',
+        videoId: 'tj9SZm31okU',
+        playerVars: {
+          listType: 'playlist',
+          list: 'PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER',
+          autoplay: 0,
+          loop: 1, // Sometimes YouTube ignores this for playlists via API, handled manually in onStateChange
+          controls: 0,
+          showinfo: 0,
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          'onReady': onPlayerReady,
+          'onStateChange': onPlayerStateChange
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      isYtReady = true;
+      ytPlayer.setVolume(document.getElementById('lofiVolume').value);
+    }
+
+    function onPlayerStateChange(event) {
+      if (event.data == YT.PlayerState.PLAYING) {
+        lofiPlaying = true;
+        document.getElementById('lofiPlayIcon').style.display = 'none';
+        document.getElementById('lofiPauseIcon').style.display = 'block';
+      } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.UNSTARTED) {
+        lofiPlaying = false;
+        document.getElementById('lofiPlayIcon').style.display = 'block';
+        document.getElementById('lofiPauseIcon').style.display = 'none';
+      } else if (event.data == YT.PlayerState.ENDED) {
+        // Loop the playlist when it ends
+        ytPlayer.playVideoAt(0);
+      }
+    }
+
+    function toggleLofi() {
+      if (!isYtReady) {
+        alert("YouTube player hozircha yuklanmadi (Localhost yoki xavfsizlik cheklovi bo'lishi mumkin). Real domenga yuklanganda ishlaydi.");
+        return;
+      }
+      if (lofiPlaying) {
+        ytPlayer.pauseVideo();
+      } else {
+        ytPlayer.playVideo();
+      }
+    }
+
+    function lofiNext() {
+      if (!isYtReady) return;
+      ytPlayer.nextVideo();
+    }
+
+    function lofiPrev() {
+      if (!isYtReady) return;
+      ytPlayer.previousVideo();
+    }
+
+    function changeLofiVolume(val) {
+      if (!isYtReady) return;
+      ytPlayer.setVolume(val);
     }
 
     // INIT
