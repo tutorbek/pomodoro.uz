@@ -97,6 +97,10 @@
       -webkit-font-smoothing: antialiased;
     }
 
+    body.modal-open {
+      overflow: hidden;
+    }
+
     .wrapper {
       width: 100%;
       max-width: 580px;
@@ -934,8 +938,7 @@
       }
 
       .modal-overlay {
-        align-items: flex-start;
-        padding-top: calc(60px + var(--tg-content-safe-area-inset-top, var(--tg-safe-area-inset-top, env(safe-area-inset-top, 0px))));
+        padding: 1rem;
       }
 
       .modal-content {
@@ -1607,17 +1610,26 @@
         setTimeout(() => document.getElementById('taskModalInput').focus(), 120);
       }
       document.getElementById(id).classList.add('open');
+      document.body.classList.add('modal-open');
     }
 
     function closeModal(id) {
       document.getElementById(id).classList.remove('open');
+      // Only remove modal-open if no other modals are open
+      if (!document.querySelector('.modal-overlay.open')) {
+        document.body.classList.remove('modal-open');
+      }
     }
 
     document.querySelectorAll('.modal-overlay').forEach(o => {
       o.addEventListener('mousedown', e => { if (e.target === o) closeModal(o.id); });
     });
     document.addEventListener('keydown', e => {
-      if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.open').forEach(m => m.classList.remove('open'));
+      if (e.key === 'Escape') {
+        const openModals = document.querySelectorAll('.modal-overlay.open');
+        openModals.forEach(m => m.classList.remove('open'));
+        if (openModals.length > 0) document.body.classList.remove('modal-open');
+      }
       if (e.key === 'Enter' && !e.shiftKey) {
         if (document.getElementById('addTaskModal').classList.contains('open')) {
           e.preventDefault(); addTaskFromModal();
