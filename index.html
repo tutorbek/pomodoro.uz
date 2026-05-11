@@ -62,7 +62,9 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    button:focus, a:focus, input:focus {
+    button:focus,
+    a:focus,
+    input:focus {
       outline: none;
     }
 
@@ -341,7 +343,7 @@
       background: var(--bg-surface);
       box-shadow: 0 0 0 1px #6C63FF;
     }
-    
+
     [data-theme="dark"] .theme-option.active,
     [data-theme="oled"] .theme-option.active,
     [data-theme="solarized"] .theme-option.active {
@@ -553,9 +555,17 @@
 
     /* VISUAL EFFECTS */
     @keyframes ripple {
-      0% { transform: scale(0.8); opacity: 0.5; }
-      100% { transform: scale(2.5); opacity: 0; }
+      0% {
+        transform: scale(0.8);
+        opacity: 0.5;
+      }
+
+      100% {
+        transform: scale(2.5);
+        opacity: 0;
+      }
     }
+
     .ripple-effect {
       position: absolute;
       top: 50%;
@@ -568,18 +578,32 @@
       pointer-events: none;
       animation: ripple 1.5s ease-out infinite;
     }
+
     @keyframes shake {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(-5deg); }
-      75% { transform: rotate(5deg); }
+
+      0%,
+      100% {
+        transform: rotate(0deg);
+      }
+
+      25% {
+        transform: rotate(-5deg);
+      }
+
+      75% {
+        transform: rotate(5deg);
+      }
     }
+
     .shake-effect {
       animation: shake 0.5s ease-in-out 3;
     }
+
     .glow-effect {
       text-shadow: 0 0 20px var(--primary-grad);
       transition: text-shadow 0.3s ease;
     }
+
     .pop-up-toast {
       position: fixed;
       top: 20px;
@@ -588,7 +612,7 @@
       background: var(--bg-card);
       padding: 12px 24px;
       border-radius: var(--radius-pill);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
       z-index: 1000;
       transition: transform 0.5s var(--spring);
       display: flex;
@@ -596,6 +620,7 @@
       gap: 10px;
       border: 1px solid var(--border);
     }
+
     .pop-up-toast.active {
       transform: translateX(-50%) translateY(0);
     }
@@ -1074,6 +1099,7 @@
       flex-direction: column;
       gap: 16px;
     }
+
     .lofi-header {
       display: flex;
       justify-content: space-between;
@@ -1081,11 +1107,13 @@
       flex-wrap: wrap;
       gap: 16px;
     }
+
     .lofi-info {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .lofi-icon {
       font-size: 28px;
       width: 48px;
@@ -1096,21 +1124,25 @@
       align-items: center;
       justify-content: center;
     }
+
     .lofi-text h3 {
       font-size: 16px;
       font-weight: 600;
       color: var(--text-main);
     }
+
     .lofi-text p {
       font-size: 13px;
       color: var(--text-sub);
       margin-top: 2px;
     }
+
     .lofi-controls {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .lofi-btn {
       background: none;
       border: none;
@@ -1124,32 +1156,39 @@
       border-radius: 50%;
       transition: all 0.2s ease;
     }
+
     .lofi-btn:hover {
       background: var(--bg-surface);
       color: var(--text-main);
     }
+
     .lofi-btn.play-btn {
       background: var(--primary-grad);
       color: var(--text-on-accent);
       box-shadow: 0 2px 8px rgba(108, 99, 255, 0.15);
     }
+
     [data-theme='cyberpunk'] .lofi-btn.play-btn,
     [data-theme='high-contrast'] .lofi-btn.play-btn {
       color: #000000 !important;
     }
+
     .lofi-btn.play-btn:hover {
       transform: scale(1.05);
       color: var(--text-on-accent);
     }
+
     [data-theme='cyberpunk'] .lofi-btn.play-btn:hover,
     [data-theme='high-contrast'] .lofi-btn.play-btn:hover {
       color: #000000 !important;
     }
+
     .lofi-volume {
       display: flex;
       align-items: center;
       gap: 12px;
     }
+
     .lofi-volume input[type=range] {
       flex: 1;
       height: 4px;
@@ -1204,19 +1243,24 @@
 
       .modal-overlay {
         padding: 1rem;
-        align-items: flex-start; /* Position at top to stay above keyboard */
-        transition: none !important; /* Instant open */
+        align-items: flex-start;
+        /* Position at top to stay above keyboard */
+        transition: none !important;
+        /* Instant open */
         background: rgba(13, 13, 13, 0.85) !important;
       }
 
       .modal-content {
         padding: 24px;
         border-radius: 24px;
-        transform: none !important; /* No movement to prevent jumping */
-        transition: none !important; /* Instant open */
+        transform: none !important;
+        /* No movement to prevent jumping */
+        transition: none !important;
+        /* Instant open */
         max-height: 85vh;
         width: 100%;
-        margin: 60px auto 0 !important; /* Fixed pixel margin to prevent keyboard jumping */
+        margin: 60px auto 0 !important;
+        /* Fixed pixel margin to prevent keyboard jumping */
       }
 
       .modal-overlay.open .modal-content {
@@ -1225,10 +1269,10 @@
 
       /* Ensure consistent top-positioning for all modals on mobile */
       .modal-content {
-        margin: 60px auto 0 !important; 
-        padding: 24px; 
+        margin: 60px auto 0 !important;
+        padding: 24px;
       }
-      
+
       .modal-footer {
         flex-direction: column-reverse;
         gap: 10px;
@@ -1239,9 +1283,10 @@
       .modal-footer .btn-primary-small {
         width: 100%;
         margin: 0;
-        padding: 14px; /* Slightly larger for easier tapping */
+        padding: 14px;
+        /* Slightly larger for easier tapping */
       }
-      
+
       /* Smooth task input with keyboard - adjust padding to avoid sticking */
       #addTaskModal .modal-content {
         padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
@@ -1257,7 +1302,7 @@
 
 <body>
   <!-- SEO Hidden Content -->
-  
+
   <div
     style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0;">
     <h1>An online Pomodoro Timer to boost your productivity</h1>
@@ -1354,39 +1399,52 @@
         </div>
         <div class="lofi-controls">
           <button class="lofi-btn" id="lofiPrev" onclick="lofiPrev()" title="Previous track">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="19 20 9 12 19 4 19 20"></polygon>
+              <line x1="5" y1="19" x2="5" y2="5"></line>
+            </svg>
           </button>
           <button class="lofi-btn play-btn" id="lofiPlayPause" onclick="toggleLofi()" title="Play/Pause">
-            <svg id="lofiPlayIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            <svg id="lofiPauseIcon" style="display:none;" width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+            <svg id="lofiPlayIcon" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <svg id="lofiPauseIcon" style="display:none;" width="20" height="20" viewBox="0 0 24 24"
+              fill="currentColor">
+              <rect x="6" y="4" width="4" height="16"></rect>
+              <rect x="14" y="4" width="4" height="16"></rect>
+            </svg>
           </button>
           <button class="lofi-btn" id="lofiNext" onclick="lofiNext()" title="Next track">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 4 15 12 5 20 5 4"></polygon>
+              <line x1="19" y1="5" x2="19" y2="19"></line>
+            </svg>
           </button>
         </div>
       </div>
-      
+
       <div class="lofi-progress" style="display: flex; align-items: center; gap: 12px; width: 100%; margin-top: 4px;">
-        <span id="lofiCurrentTime" style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px; text-align: right;">0:00</span>
-        <input type="range" id="lofiProgressBar" min="0" max="100" value="0" step="1" 
-          oninput="document.getElementById('lofiCurrentTime').textContent = formatLofiTime(this.value); lofiSeeking = true;" 
-          onchange="seekLofi(this.value); lofiSeeking = false;" 
-          onmouseup="lofiSeeking = false;" ontouchend="lofiSeeking = false;"
-          style="flex: 1; height: 4px;">
-        <span id="lofiTotalTime" style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px;">0:00</span>
+        <span id="lofiCurrentTime"
+          style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px; text-align: right;">0:00</span>
+        <input type="range" id="lofiProgressBar" min="0" max="100" value="0" step="1"
+          oninput="document.getElementById('lofiCurrentTime').textContent = formatLofiTime(this.value); lofiSeeking = true;"
+          onchange="seekLofi(this.value); lofiSeeking = false;" onmouseup="lofiSeeking = false;"
+          ontouchend="lofiSeeking = false;" style="flex: 1; height: 4px;">
+        <span id="lofiTotalTime"
+          style="font-family: 'DM Mono', monospace; font-size: 13px; color: var(--text-sub); width: 40px;">0:00</span>
       </div>
 
       <div class="lofi-volume">
         <span style="font-size: 16px; color: var(--text-sub);">🔉</span>
         <input type="range" id="lofiVolume" min="0" max="100" value="50" oninput="changeLofiVolume(this.value)">
       </div>
-      
-      <!-- Hidden iframe container, 200x200 ensures it's not considered 'inactive' by mobile WebViews -->
-      <div id="yt-container" style="position: fixed; width: 200px; height: 200px; top: -500px; left: -500px; z-index: -1000; opacity: 0.01; pointer-events: none; overflow: hidden;">
-        <!-- Pre-loading iframe directly for maximum speed in restricted WebViews -->
-        <iframe id="ytplayer" 
-          src="https://www.youtube.com/embed/tj9SZm31okU?enablejsapi=1&autoplay=0&listType=playlist&list=PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER&playsinline=1&rel=0&modestbranding=1" 
-          frameborder="0" allow="autoplay; encrypted-media"></iframe>
+
+      <!-- Hidden container, but kept within viewport to prevent mobile browser throttling -->
+      <div id="yt-container"
+        style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; z-index: -1000; opacity: 0; pointer-events: none; overflow: hidden;">
+        <div id="ytplayer"></div>
       </div>
     </section>
 
@@ -1527,7 +1585,8 @@
       </div>
 
       <!-- Time Duration Section -->
-      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Time Duration (minutes)</h3>
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Time Duration (minutes)
+      </h3>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Pomodoro</label>
@@ -1544,7 +1603,8 @@
       </div>
 
       <!-- Factory Reset Section -->
-      <div class="form-row" style="align-items: center; margin-bottom: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+      <div class="form-row"
+        style="align-items: center; margin-bottom: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
         <div style="flex: 1;">
           <span style="font-size:14px; font-weight:500; color:var(--text-sub);">Factory Reset</span>
         </div>
@@ -1626,7 +1686,7 @@
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(t); osc.stop(t + 0.2);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function playResetSound() {
@@ -1644,7 +1704,7 @@
         osc.connect(gain);
         gain.connect(ctx.destination);
         osc.start(t); osc.stop(t + 0.2);
-      } catch (e) {}
+      } catch (e) { }
     }
 
     function playClick() {
@@ -1939,7 +1999,7 @@
         clearInterval(timerInterval); timerInterval = null;
         state.isRunning = false;
         document.getElementById('timerWrapper').classList.remove('running');
-        
+
         if (isYtReady && lofiPlaying) {
           const originalVol = document.getElementById('lofiVolume').value;
           ytPlayer.setVolume(originalVol * 0.2); // Drop to 20%
@@ -2253,35 +2313,57 @@
     let lofiSeeking = false;
     let lofiProgressInterval;
 
+    function getOrigin() {
+      if (window.location.origin && window.location.origin !== 'null') return window.location.origin;
+      return window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+    }
+
     function loadYoutubeScript() {
       if (window.YT && window.YT.Player) return;
       if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
-      var tag = document.createElement('script');
+      
+      const tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
+      tag.onerror = () => {
+        console.error("YouTube API failed to load");
+        showToast("Music Player yuklanishida xatolik. Sahifani yangilang.", 3000);
+      };
+      const firstScriptTag = document.getElementsByTagName('script')[0];
       if (firstScriptTag) {
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
       } else {
         document.head.appendChild(tag);
       }
     }
-    // Start loading immediately
+
+    // Start loading early
     loadYoutubeScript();
 
-    function getOrigin() {
-      if (window.location.origin && window.location.origin !== 'null') return window.location.origin;
-      return window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
-    }
-
     function onYouTubeIframeAPIReady() {
-      // Use existing iframe for faster initialization
+      // Create player from scratch for better stability in restricted WebViews
       ytPlayer = new YT.Player('ytplayer', {
+        height: '1',
+        width: '1',
+        host: 'https://www.youtube-nocookie.com',
+        playerVars: {
+          'autoplay': 0,
+          'playsinline': 1,
+          'rel': 0,
+          'modestbranding': 1,
+          'enablejsapi': 1,
+          'origin': getOrigin(),
+          'listType': 'playlist',
+          'list': 'PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER'
+        },
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange,
           'onError': (e) => {
-            console.log('YT Error:', e);
+            console.error('YT Player Error:', e.data);
             isYtReady = false;
+            if (e.data === 150 || e.data === 101) {
+              showToast("Ushbu pleylistni ushbu saytda ijro etib bo'lmaydi.", 3000);
+            }
           }
         }
       });
@@ -2289,8 +2371,11 @@
 
     function onPlayerReady(event) {
       isYtReady = true;
-      ytPlayer.setVolume(document.getElementById('lofiVolume').value);
-      lofiProgressInterval = setInterval(updateLofiProgress, 1000);
+      const savedVol = document.getElementById('lofiVolume').value;
+      ytPlayer.setVolume(savedVol);
+      if (!lofiProgressInterval) {
+        lofiProgressInterval = setInterval(updateLofiProgress, 1000);
+      }
     }
 
     function onPlayerStateChange(event) {
@@ -2298,28 +2383,27 @@
         lofiPlaying = true;
         document.getElementById('lofiPlayIcon').style.display = 'none';
         document.getElementById('lofiPauseIcon').style.display = 'block';
-      } else if (event.data == YT.PlayerState.PAUSED || event.data == YT.PlayerState.UNSTARTED) {
+      } else {
         lofiPlaying = false;
         document.getElementById('lofiPlayIcon').style.display = 'block';
         document.getElementById('lofiPauseIcon').style.display = 'none';
-      } else if (event.data == YT.PlayerState.ENDED) {
-        // Loop the playlist when it ends
-        ytPlayer.playVideoAt(0);
+        
+        if (event.data == YT.PlayerState.ENDED) {
+          ytPlayer.playVideoAt(0); // Loop
+        }
       }
     }
 
     function toggleLofi() {
       if (!isYtReady || !ytPlayer) {
-        // Retry loading if not ready
         loadYoutubeScript();
-        showToast("Player yuklanmoqda... bir necha daqiqadan so'ng qayta urinib ko'ring.", 3000);
+        showToast("Player yuklanmoqda... bir necha soniyadan so'ng qayta urinib ko'ring.", 3000);
         return;
       }
       try {
         if (lofiPlaying) {
           ytPlayer.pauseVideo();
         } else {
-          // On some mobile devices, we need to ensure the player is "active"
           ytPlayer.playVideo();
         }
       } catch (e) {
@@ -2346,11 +2430,11 @@
       if (!isYtReady || !lofiPlaying || lofiSeeking) return;
       const curr = ytPlayer.getCurrentTime() || 0;
       const total = ytPlayer.getDuration() || 0;
-      
+
       const progressBar = document.getElementById('lofiProgressBar');
       if (progressBar.max != total) progressBar.max = total;
       progressBar.value = curr;
-      
+
       document.getElementById('lofiCurrentTime').textContent = formatLofiTime(curr);
       document.getElementById('lofiTotalTime').textContent = formatLofiTime(total);
     }
