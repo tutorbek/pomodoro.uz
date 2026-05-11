@@ -1198,15 +1198,15 @@
       }
 
       .modal-overlay {
-        padding: 0;
-        align-items: flex-end; /* Bottom sheet feel on mobile */
+        padding: 1rem;
+        align-items: center; /* Center on mobile by default for better keyboard handling */
       }
 
       .modal-content {
         padding: 24px;
-        border-radius: 24px 24px 0 0; /* Rounded top corners only */
-        transform: translate3d(0, 100%, 0); /* Start from bottom */
-        max-height: 85vh;
+        border-radius: 24px;
+        transform: translate3d(0, 20px, 0) scale(0.96); /* Standard animation for all */
+        max-height: 90vh;
         width: 100%;
         margin: 0;
       }
@@ -1215,15 +1215,29 @@
         transform: translate3d(0, 0, 0);
       }
 
-      /* Specific height for settings modal on mobile */
-      #settingsModal .modal-content {
-        height: 75vh;
-        max-height: 85vh;
+      /* Ensure consistent centering for all modals on mobile */
+      .modal-content {
+        margin-bottom: auto;
+        margin-top: auto;
+        padding: 32px 24px; /* More vertical breathing room */
       }
       
-      /* Smooth task input with keyboard */
+      .modal-footer {
+        flex-direction: column-reverse;
+        gap: 10px;
+        width: 100%;
+      }
+
+      .modal-footer .btn-secondary,
+      .modal-footer .btn-primary-small {
+        width: 100%;
+        margin: 0;
+        padding: 14px; /* Slightly larger for easier tapping */
+      }
+      
+      /* Smooth task input with keyboard - adjust padding to avoid sticking */
       #addTaskModal .modal-content {
-        padding-bottom: env(safe-area-inset-bottom, 20px);
+        padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
       }
 
       .pop-up-toast {
@@ -1433,6 +1447,7 @@
         <button class="modal-close" onclick="closeModal('settingsModal')">✕</button>
       </div>
 
+      <!-- Appearance Section -->
       <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">Appearance</h3>
       <div class="form-group">
         <span class="form-label">Theme Selection</span>
@@ -1488,16 +1503,21 @@
         </div>
       </div>
 
-      <div class="form-row" style="align-items: center; margin-bottom: 24px; margin-top: 16px;">
-        <div style="flex: 1;">
-          <span style="font-size:14px; font-weight:500; color:var(--text-sub);">Factory Reset</span>
-        </div>
-        <button class="btn-secondary" onclick="clearLocalStorage()"
-          style="padding: 8px 16px; min-width: 130px; color: #FF6B6B;">Clear Data</button>
+      <!-- Alarm Sound Section -->
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Alarm Sound</h3>
+      <div class="sound-grid" id="soundGrid"></div>
+
+      <!-- Volume Section -->
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Volume</h3>
+      <div class="volume-control">
+        <span style="font-size:18px;">🔈</span>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70" oninput="updateVolLabel()">
+        <span style="font-size:18px;">🔊</span>
+        <span class="vol-val" id="volLabel">70%</span>
       </div>
 
-      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin-bottom:12px;">Timer Durations (minutes)
-      </h3>
+      <!-- Time Duration Section -->
+      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Time Duration (minutes)</h3>
       <div class="form-row">
         <div class="form-group">
           <label class="form-label">Pomodoro</label>
@@ -1513,15 +1533,13 @@
         <input type="number" class="form-input" id="setLongBreak" min="1" max="60" value="15">
       </div>
 
-      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Alarm Sound</h3>
-      <div class="sound-grid" id="soundGrid"></div>
-
-      <h3 style="font-size:14px; font-weight:600; color:var(--text-main); margin:24px 0 12px;">Volume</h3>
-      <div class="volume-control">
-        <span style="font-size:18px;">🔈</span>
-        <input type="range" id="volumeSlider" min="0" max="100" value="70" oninput="updateVolLabel()">
-        <span style="font-size:18px;">🔊</span>
-        <span class="vol-val" id="volLabel">70%</span>
+      <!-- Factory Reset Section -->
+      <div class="form-row" style="align-items: center; margin-bottom: 24px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+        <div style="flex: 1;">
+          <span style="font-size:14px; font-weight:500; color:var(--text-sub);">Factory Reset</span>
+        </div>
+        <button class="btn-secondary" onclick="clearLocalStorage()"
+          style="padding: 8px 16px; min-width: 130px; color: #FF6B6B;">Clear Data</button>
       </div>
 
       <div class="modal-footer">
@@ -2034,7 +2052,12 @@
 
     // MODALS
     function openModal(id) {
-      if (id === 'settingsModal') populateSettings();
+      if (id === 'settingsModal') {
+        populateSettings();
+        // Reset scroll to top
+        const content = document.querySelector('#settingsModal .modal-content');
+        if (content) content.scrollTop = 0;
+      }
       if (id === 'pomModal') {
         state.pomTempTarget = state.pomTarget;
         document.getElementById('pomPickerVal').textContent = state.pomTempTarget;
