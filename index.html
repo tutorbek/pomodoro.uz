@@ -1377,8 +1377,8 @@
         <input type="range" id="lofiVolume" min="0" max="100" value="50" oninput="changeLofiVolume(this.value)">
       </div>
       
-      <!-- Hidden iframe container, avoids some browser autoplay blocks by being "visible" but opacity 0.01 -->
-      <div id="yt-container" style="position: absolute; width: 200px; height: 200px; top: -1000px; left: -1000px; z-index: -100; opacity: 0.01; pointer-events: none; overflow: hidden;">
+      <!-- Hidden iframe container, kept in viewport but invisible to prevent mobile suspension -->
+      <div id="yt-container" style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; z-index: -100; opacity: 0.001; pointer-events: none; overflow: hidden;">
         <div id="ytplayer"></div>
       </div>
     </section>
@@ -2246,19 +2246,23 @@
     let lofiSeeking = false;
     let lofiProgressInterval;
 
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    if (firstScriptTag) {
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    } else {
-      document.head.appendChild(tag);
+    function loadYoutubeScript() {
+      if (window.YT && window.YT.Player) return;
+      var tag = document.createElement('script');
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      if (firstScriptTag) {
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+      } else {
+        document.head.appendChild(tag);
+      }
     }
+    loadYoutubeScript();
 
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('ytplayer', {
-        height: '200',
-        width: '200',
+        height: '100',
+        width: '100',
         videoId: 'tj9SZm31okU',
         playerVars: {
           listType: 'playlist',
@@ -2276,7 +2280,10 @@
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange,
-          'onError': (e) => console.log('YT Error:', e)
+          'onError': (e) => {
+            console.log('YT Error:', e);
+            isYtReady = false;
+          }
         }
       });
     }
@@ -2303,14 +2310,21 @@
     }
 
     function toggleLofi() {
-      if (!isYtReady) {
-        alert("YouTube player hozircha yuklanmadi (Localhost yoki xavfsizlik cheklovi bo'lishi mumkin). Real domenga yuklanganda ishlaydi.");
+      if (!isYtReady || !ytPlayer) {
+        // Retry loading if not ready
+        loadYoutubeScript();
+        alert("YouTube player yuklanmoqda... Bir necha soniyadan so'ng qayta urinib ko'ring.");
         return;
       }
-      if (lofiPlaying) {
-        ytPlayer.pauseVideo();
-      } else {
-        ytPlayer.playVideo();
+      try {
+        if (lofiPlaying) {
+          ytPlayer.pauseVideo();
+        } else {
+          // On some mobile devices, we need to ensure the player is "active"
+          ytPlayer.playVideo();
+        }
+      } catch (e) {
+        console.error("Lofi Toggle Error:", e);
       }
     }
 
