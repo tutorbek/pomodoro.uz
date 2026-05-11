@@ -29,6 +29,10 @@
 
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍅</text></svg>">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://s.ytimg.com">
+  <link rel="preconnect" href="https://www.google.com">
+  <link rel="dns-prefetch" href="https://www.youtube.com">
   <link
     href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@200;300;400&family=DM+Sans:wght@400;500;600&family=Outfit:wght@700&display=swap"
     rel="stylesheet">
@@ -1379,7 +1383,10 @@
       
       <!-- Hidden iframe container, 200x200 ensures it's not considered 'inactive' by mobile WebViews -->
       <div id="yt-container" style="position: fixed; width: 200px; height: 200px; top: -500px; left: -500px; z-index: -1000; opacity: 0.01; pointer-events: none; overflow: hidden;">
-        <div id="ytplayer"></div>
+        <!-- Pre-loading iframe directly for maximum speed in restricted WebViews -->
+        <iframe id="ytplayer" 
+          src="https://www.youtube.com/embed/tj9SZm31okU?enablejsapi=1&autoplay=0&listType=playlist&list=PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER&playsinline=1&rel=0&modestbranding=1" 
+          frameborder="0" allow="autoplay; encrypted-media"></iframe>
       </div>
     </section>
 
@@ -1850,7 +1857,7 @@
       }
     }
 
-    function showToast(msg) {
+    function showToast(msg, duration = 4000) {
       let toast = document.getElementById('app-toast');
       if (!toast) {
         toast = document.createElement('div');
@@ -1860,7 +1867,7 @@
       }
       toast.textContent = msg;
       toast.classList.add('active');
-      setTimeout(() => toast.classList.remove('active'), 4000);
+      setTimeout(() => toast.classList.remove('active'), duration);
     }
 
     // TIMER LOGIC
@@ -2267,23 +2274,8 @@
     }
 
     function onYouTubeIframeAPIReady() {
+      // Use existing iframe for faster initialization
       ytPlayer = new YT.Player('ytplayer', {
-        height: '100',
-        width: '100',
-        videoId: 'tj9SZm31okU',
-        playerVars: {
-          listType: 'playlist',
-          list: 'PLiv5O-nkp6yIcMMKaQuRLCwGNDbgb7OER',
-          autoplay: 0,
-          loop: 1,
-          controls: 0,
-          showinfo: 0,
-          rel: 0,
-          modestbranding: 1,
-          playsinline: 1,
-          enablejsapi: 1,
-          origin: getOrigin()
-        },
         events: {
           'onReady': onPlayerReady,
           'onStateChange': onPlayerStateChange,
@@ -2320,7 +2312,7 @@
       if (!isYtReady || !ytPlayer) {
         // Retry loading if not ready
         loadYoutubeScript();
-        alert("YouTube player yuklanmoqda... Bir necha soniyadan so'ng qayta urinib ko'ring.");
+        showToast("Player yuklanmoqda... bir necha daqiqadan so'ng qayta urinib ko'ring.", 3000);
         return;
       }
       try {
