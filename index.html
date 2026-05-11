@@ -1200,14 +1200,9 @@
 
       .modal-overlay {
         padding: 1rem;
-        align-items: center; /* Center on mobile by default for better keyboard handling */
-      }
-
-      .modal-overlay {
-        padding: 1rem;
         align-items: flex-start; /* Position at top to stay above keyboard */
         transition: none !important; /* Instant open */
-        background: rgba(13, 13, 13, 0.8); /* Slightly darker for better focus */
+        background: rgba(13, 13, 13, 0.85) !important;
       }
 
       .modal-content {
@@ -1215,9 +1210,9 @@
         border-radius: 24px;
         transform: none !important; /* No movement to prevent jumping */
         transition: none !important; /* Instant open */
-        max-height: 90vh;
+        max-height: 85vh;
         width: 100%;
-        margin: 10vh auto 0; /* Fixed top position */
+        margin: 60px auto 0 !important; /* Fixed pixel margin to prevent keyboard jumping */
       }
 
       .modal-overlay.open .modal-content {
@@ -1226,7 +1221,7 @@
 
       /* Ensure consistent top-positioning for all modals on mobile */
       .modal-content {
-        margin: 8vh auto 0; 
+        margin: 60px auto 0 !important; 
         padding: 24px; 
       }
       
