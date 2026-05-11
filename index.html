@@ -1377,8 +1377,8 @@
         <input type="range" id="lofiVolume" min="0" max="100" value="50" oninput="changeLofiVolume(this.value)">
       </div>
       
-      <!-- Hidden iframe container, kept in viewport but invisible to prevent mobile suspension -->
-      <div id="yt-container" style="position: fixed; width: 1px; height: 1px; bottom: 0; right: 0; z-index: -100; opacity: 0.001; pointer-events: none; overflow: hidden;">
+      <!-- Hidden iframe container, 200x200 ensures it's not considered 'inactive' by mobile WebViews -->
+      <div id="yt-container" style="position: fixed; width: 200px; height: 200px; top: -500px; left: -500px; z-index: -1000; opacity: 0.01; pointer-events: none; overflow: hidden;">
         <div id="ytplayer"></div>
       </div>
     </section>
@@ -2248,6 +2248,7 @@
 
     function loadYoutubeScript() {
       if (window.YT && window.YT.Player) return;
+      if (document.querySelector('script[src*="youtube.com/iframe_api"]')) return;
       var tag = document.createElement('script');
       tag.src = "https://www.youtube.com/iframe_api";
       var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -2257,7 +2258,13 @@
         document.head.appendChild(tag);
       }
     }
+    // Start loading immediately
     loadYoutubeScript();
+
+    function getOrigin() {
+      if (window.location.origin && window.location.origin !== 'null') return window.location.origin;
+      return window.location.protocol + '//' + window.location.hostname + (window.location.port ? ':' + window.location.port : '');
+    }
 
     function onYouTubeIframeAPIReady() {
       ytPlayer = new YT.Player('ytplayer', {
@@ -2275,7 +2282,7 @@
           modestbranding: 1,
           playsinline: 1,
           enablejsapi: 1,
-          origin: window.location.origin
+          origin: getOrigin()
         },
         events: {
           'onReady': onPlayerReady,
