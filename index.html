@@ -1264,26 +1264,20 @@
       }
 
       .modal-content {
-        padding: 24px;
+        padding: 24px 24px calc(24px + env(safe-area-inset-bottom, 0px));
         border-radius: 24px;
         transform: none !important;
         /* No movement to prevent jumping */
         transition: none !important;
         /* Instant open */
-        max-height: 85vh;
+        max-height: 82vh;
         width: 100%;
-        margin: 60px auto 0 !important;
-        /* Fixed pixel margin to prevent keyboard jumping */
+        margin: 40px auto 40px !important;
+        /* Fixed pixel margin at top and bottom to prevent sticking and keyboard jumping */
       }
 
       .modal-overlay.open .modal-content {
         transform: translate3d(0, 0, 0);
-      }
-
-      /* Ensure consistent top-positioning for all modals on mobile */
-      .modal-content {
-        margin: 60px auto 0 !important;
-        padding: 24px;
       }
 
       .modal-footer {
@@ -1300,10 +1294,6 @@
         /* Slightly larger for easier tapping */
       }
 
-      /* Smooth task input with keyboard - adjust padding to avoid sticking */
-      #addTaskModal .modal-content {
-        padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px));
-      }
 
       .pop-up-toast {
         width: 90%;
