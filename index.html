@@ -1979,8 +1979,13 @@
           state.remaining = 0;
           stopTimer();
           playAlarm();
+          triggerAlarmHaptic();
           if (state.mode === 'pomodoro') {
+            const prevCompleted = state.completed;
             state.completed += 1;
+            if (state.completed >= state.goal && prevCompleted < state.goal) {
+              setTimeout(triggerGoalAchievedHaptic, 1800);
+            }
             if (state.completed > state.goal) {
               state.goal = state.completed;
             }
@@ -2117,10 +2122,28 @@
         return audioCtx;
       }
 
-      function triggerHaptic() {
+      function triggerHaptic(duration = 8) {
         if (typeof navigator !== 'undefined' && navigator.vibrate) {
           try {
-            navigator.vibrate(6);
+            navigator.vibrate(duration);
+          } catch (e) { }
+        }
+      }
+
+      function triggerAlarmHaptic() {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          try {
+            // 3 resonant pulsations synchronized with bronze bells
+            navigator.vibrate([180, 200, 180, 200, 350]);
+          } catch (e) { }
+        }
+      }
+
+      function triggerGoalAchievedHaptic() {
+        if (typeof navigator !== 'undefined' && navigator.vibrate) {
+          try {
+            // Triumphant celebration pulse
+            navigator.vibrate([90, 70, 130, 70, 260]);
           } catch (e) { }
         }
       }
@@ -2128,6 +2151,7 @@
       // Ultra-precise, low-pitched, warm Apple Watch / Swiss Watch Taptic click
       let lastTickTime = 0;
       function playTickSound() {
+        triggerHaptic(8);
         try {
           const nowMs = performance.now();
           // Throttle slightly at extreme scrolling speeds to keep individual clicks crystal clear
