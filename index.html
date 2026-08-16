@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uz">
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -343,6 +343,29 @@
 
     body.fullscreen-mode .fullscreen-toggle-btn {
       display: none !important;
+    }
+
+    .fullscreen-mode-badge {
+      display: none;
+    }
+
+    body.fullscreen-mode .fullscreen-mode-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 6px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--gray-text);
+      background: var(--btn-secondary-bg);
+      border: 1px solid var(--gray-border);
+      border-radius: 999px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      user-select: none;
+      pointer-events: none;
+      transition: color 0.2s ease, border-color 0.2s ease;
     }
 
     body.fullscreen-mode .actions {
@@ -1090,12 +1113,59 @@
       gap: 36px;
     }
 
+    .info-header-row {
+      display: flex;
+      justify-content: flex-start;
+      direction: ltr !important;
+      margin-bottom: -10px;
+    }
+
+    .lang-switcher {
+      display: inline-flex;
+      align-items: center;
+      direction: ltr !important;
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: 999px;
+      padding: 3px;
+      gap: 2px;
+      transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .lang-btn {
+      border: none;
+      background: transparent;
+      color: var(--gray-text);
+      font-size: 13.5px;
+      font-weight: 600;
+      padding: 6px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      user-select: none;
+      letter-spacing: -0.01em;
+    }
+
+    .lang-btn:hover {
+      color: var(--black);
+    }
+
+    .lang-btn.active {
+      background: var(--btn-secondary-bg);
+      color: var(--black);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
     .info-main-title {
       font-size: clamp(24px, 4.5vw, 32px);
       font-weight: 800;
       line-height: 1.3;
       letter-spacing: -0.025em;
       color: var(--black);
+    }
+
+    .info-container[dir="rtl"] {
+      text-align: right;
     }
 
     .info-block {
@@ -1120,6 +1190,23 @@
       font-weight: 450;
     }
 
+    .info-steps-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-top: 4px;
+    }
+
+    .info-step-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info-step-item .info-text strong {
+      color: var(--black);
+      font-weight: 700;
+    }
+
     .info-source {
       font-style: italic;
       opacity: 0.9;
@@ -1130,6 +1217,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+      direction: ltr !important;
       gap: 10px;
       padding-top: 36px;
       border-top: 1px solid var(--gray-border);
@@ -1174,6 +1262,7 @@
       color: var(--gray-text);
       display: inline-flex;
       align-items: center;
+      direction: ltr !important;
       gap: 5px;
       letter-spacing: -0.01em;
     }
@@ -1383,7 +1472,7 @@
           <span class="tab-label">Pomodoro</span>
         </button>
 
-        <button class="tab" data-mode="short" data-minutes="5" aria-label="Qisqa tanaffus">
+        <button class="tab" data-mode="short" data-minutes="5" aria-label="Short Break">
           <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
@@ -1392,17 +1481,17 @@
             <line x1="10" y1="2" x2="10" y2="5"></line>
             <line x1="14" y1="2" x2="14" y2="5"></line>
           </svg>
-          <span class="tab-label">Qisqa tanaffus</span>
+          <span class="tab-label">Short Break</span>
         </button>
 
-        <button class="tab" data-mode="long" data-minutes="15" aria-label="Uzoq tanaffus">
+        <button class="tab" data-mode="long" data-minutes="15" aria-label="Long Break">
           <svg class="tab-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 11v6a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-6"></path>
             <path d="M19 11V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v4"></path>
             <path d="M3 14h18"></path>
           </svg>
-          <span class="tab-label">Uzoq tanaffus</span>
+          <span class="tab-label">Long Break</span>
         </button>
       </div>
 
@@ -1421,7 +1510,8 @@
       </div>
 
       <div class="timer-wrap" id="timerWrap">
-        <button class="fullscreen-toggle-btn" id="fullscreenToggleBtn" title="To'liq ekran" aria-label="To'liq ekran">
+        <div class="fullscreen-mode-badge" id="fullscreenModeBadge">Pomodoro</div>
+        <button class="fullscreen-toggle-btn" id="fullscreenToggleBtn" title="Full screen" aria-label="Full screen">
           <svg class="icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
@@ -1438,23 +1528,23 @@
       </div>
 
       <div class="actions">
-        <button class="btn btn-primary" id="startBtn">Boshlash</button>
-        <button class="btn btn-secondary" id="resetBtn">Qayta o'rnatish</button>
-        <button class="btn btn-secondary fullscreen-exit-btn" id="fullscreenExitBtn">Chiqish</button>
+        <button class="btn btn-primary" id="startBtn">Start</button>
+        <button class="btn btn-secondary" id="resetBtn">Reset</button>
+        <button class="btn btn-secondary fullscreen-exit-btn" id="fullscreenExitBtn">Exit</button>
       </div>
 
       <!-- Desktop / tablet: goal panel shown inline -->
       <div class="goal-panel goal-panel--inline" id="goalPanelInline">
         <div class="goal-row">
-          <span class="goal-label">Kunlik maqsad:</span>
+          <span class="goal-label">Daily goal:</span>
           <div class="stepper">
-            <button class="goal-minus" aria-label="Kamaytirish">−</button>
+            <button class="goal-minus" aria-label="Decrease">−</button>
             <span class="count goal-count">4</span>
-            <button class="goal-plus" aria-label="Ko'paytirish">+</button>
+            <button class="goal-plus" aria-label="Increase">+</button>
           </div>
           <div class="goal-status">
-            <span class="count-text progress-text">1 / 4 bajarildi</span>
-            <button class="reset-link progress-reset">Tiklash</button>
+            <span class="count-text progress-text">1 / 4 completed</span>
+            <button class="reset-link progress-reset">Clear</button>
           </div>
         </div>
         <div class="progress-bars progress-bars-el"></div>
@@ -1462,7 +1552,7 @@
 
       <!-- Mobile: trigger button that opens the bottom sheet -->
       <button class="settings-trigger" id="settingsTrigger">
-        Kunlik maqsad
+        Daily goal
         <span class="mini-progress" id="miniProgress">1 / 4</span>
       </button>
 
@@ -1470,31 +1560,57 @@
   </main>
 
   <!-- Info / Guide Section (2-Sahifa) -->
-  <section class="info-section" id="infoSection" aria-label="Pomodoro haqida ma'lumot">
+  <section class="info-section" id="infoSection" aria-label="About Pomodoro">
     <div class="info-container">
 
-      <h2 class="info-main-title">Samaradorligingizni oshirish uchun Pomodoro taymeri</h2>
+      <div class="info-header-row">
+        <div class="lang-switcher" role="tablist" aria-label="Language selector">
+          <button class="lang-btn active" data-lang="en" role="tab" aria-selected="true">Eng</button>
+          <button class="lang-btn" data-lang="uz" role="tab" aria-selected="false">Uz</button>
+          <button class="lang-btn" data-lang="ru" role="tab" aria-selected="false">Ru</button>
+          <button class="lang-btn" data-lang="fa" role="tab" aria-selected="false">Fa</button>
+          <button class="lang-btn" data-lang="ar" role="tab" aria-selected="false">Ar</button>
+        </div>
+      </div>
+
+      <h2 class="info-main-title" id="infoMainTitle">Pomodoro Timer to Increase Your Productivity</h2>
 
       <div class="info-block">
-        <h3 class="info-block-title">Pomodoro.uz nima?</h3>
-        <p class="info-text">
-          Pomodoro.uz — bu Franchesko Chirillo (Francesco Cirillo) tomonidan ishlab chiqilgan vaqtni boshqarish
-          usuli bo'lgan Pomodoro texnikasidan ilhomlanib yaratilgan ilova. Ushbu ilovaning maqsadi sizga o'qish, yozish
-          yoki dasturlash kabi har qanday vazifaga to'liq diqqatingizni jamlashga yordam berishdir.
+        <h3 class="info-block-title" id="infoBlock1Title">What is Pomodoro.uz?</h3>
+        <p class="info-text" id="infoBlock1Text">
+          Pomodoro.uz is an app inspired by the Pomodoro Technique, a time management method developed by Francesco
+          Cirillo. The goal of this app is to help you focus fully on any task, whether it's reading, writing, or
+          programming.
         </p>
       </div>
 
       <div class="info-block">
-        <h3 class="info-block-title">Pomodoro texnikasi nima?</h3>
-        <p class="info-text">
-          Pomodoro texnikasi Franchesko Chirillo tomonidan ishlash va o'qishning yanada samarali usuli sifatida
-          yaratilgan. Bu texnikada ishni odatda 25 daqiqalik oraliqlarga bo'lish uchun taymerdan foydalaniladi va bu
-          oraliqlar qisqa tanaffuslar bilan ajratiladi. Har bir ish oralig'i "pomodoro" deb ataladi. Bu so'z
-          italyanchada "pomidor" degan ma'noni anglatib, Chirillo universitet talabasi bo'lgan paytida foydalangan
-          pomidor shaklidagi oshxona taymeri sharafiga shunday nomlangan. <a class="info-source" target="_blank"
-            href="https://en.wikipedia.org/wiki/Pomodoro_Technique"
-            style="color: #18a155; font-weight: 600;">Vikipediya</a>
+        <h3 class="info-block-title" id="infoBlock2Title">What is the Pomodoro Technique?</h3>
+        <p class="info-text" id="infoBlock2Text">
+          The Pomodoro Technique was created by Francesco Cirillo as a more efficient way to work and study. This
+          technique uses a timer to divide work into intervals, usually 25 minutes long, separated by short breaks. Each
+          interval of work is called a "pomodoro." The word means "tomato" in Italian, and is named after the
+          tomato-shaped kitchen timer that Cirillo used when he was a university student.
         </p>
+      </div>
+
+      <div class="info-steps-wrap">
+        <div class="info-step-item">
+          <p class="info-text" id="step1Text"><strong>25 Minutes of Pure Focus:</strong> Start the timer and lock in. No
+            distractions — just you and the goal!</p>
+        </div>
+        <div class="info-step-item">
+          <p class="info-text" id="step2Text"><strong>5-Minute Reward:</strong> When the timer rings, stop immediately.
+            Stretch, grab some water, recharge your brain.</p>
+        </div>
+        <div class="info-step-item">
+          <p class="info-text" id="step3Text"><strong>Long Break After 4 Cycles (15–30 min):</strong> Completed 4
+            rounds? Take a well-deserved extended break!</p>
+        </div>
+        <div class="info-step-item">
+          <p class="info-text" id="step4Text"><strong>The Result:</strong> Great achievements are built on small
+            25-minute wins. Start right now!</p>
+        </div>
       </div>
 
       <!-- Footer -->
@@ -1514,26 +1630,26 @@
   <div class="sheet-backdrop" id="sheetBackdrop"></div>
   <div class="goal-modal" id="bottomSheet" role="dialog" aria-modal="true">
     <div class="goal-modal-header">
-      <div class="goal-modal-title">Kunlik maqsad</div>
-      <button class="goal-modal-close" id="goalModalClose" aria-label="Yopish">✕</button>
+      <div class="goal-modal-title">Daily goal</div>
+      <button class="goal-modal-close" id="goalModalClose" aria-label="Close">✕</button>
     </div>
     <div class="goal-panel" id="goalPanelSheet"
       style="border:none; padding:0; flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 20px;">
       <div class="goal-row">
-        <span class="goal-label">Kunlik maqsad:</span>
+        <span class="goal-label">Daily goal:</span>
         <div class="stepper">
-          <button class="goal-minus" aria-label="Kamaytirish">−</button>
+          <button class="goal-minus" aria-label="Decrease">−</button>
           <span class="count goal-count">4</span>
-          <button class="goal-plus" aria-label="Ko'paytirish">+</button>
+          <button class="goal-plus" aria-label="Increase">+</button>
         </div>
       </div>
       <div class="goal-status" style="margin-left: 0; justify-content: space-between; width: 100%;">
-        <span class="count-text progress-text">1 / 4 bajarildi</span>
-        <button class="reset-link progress-reset">Tiklash</button>
+        <span class="count-text progress-text">1 / 4 completed</span>
+        <button class="reset-link progress-reset">Clear</button>
       </div>
       <div class="progress-bars progress-bars-el"></div>
     </div>
-    <button class="picker-save-btn" id="goalSaveBtn">Tayyor</button>
+    <button class="picker-save-btn" id="goalSaveBtn">Done</button>
   </div>
 
   <!-- iOS / Apple Watch Style Centered Drum Wheel Modal -->
@@ -1541,7 +1657,7 @@
   <div class="picker-modal" id="pickerSheet" role="dialog" aria-modal="true">
     <div class="wheel-picker-wrapper" id="wheelWrapper">
       <div class="wheel-lens">
-        <span class="wheel-unit-label">daqiqa</span>
+        <span class="wheel-unit-label">minutes</span>
       </div>
       <div class="wheel-mask-top"></div>
       <div class="wheel-mask-bottom"></div>
@@ -1549,7 +1665,7 @@
         <!-- 1 to 120 items with 3D rotating ticks rendered dynamically -->
       </div>
     </div>
-    <button class="picker-save-btn" id="pickerSaveBtn">Saqlash</button>
+    <button class="picker-save-btn" id="pickerSaveBtn">Save</button>
   </div>
 
   <script>
@@ -1580,7 +1696,7 @@
             if (data.mode && ['pomodoro', 'short', 'long'].includes(data.mode)) {
               state.mode = data.mode;
             }
-            if (typeof data.goal === 'number' && data.goal >= 1 && data.goal <= 12) {
+            if (typeof data.goal === 'number' && data.goal >= 1 && data.goal <= 48) {
               state.goal = data.goal;
             }
             if (typeof data.completed === 'number' && data.completed >= 0) {
@@ -1620,6 +1736,19 @@
       const progressBarsEls = document.querySelectorAll('.progress-bars-el');
       const topProgressBar = document.getElementById('topProgressBar');
       const miniProgress = document.getElementById('miniProgress');
+      const fullscreenModeBadge = document.getElementById('fullscreenModeBadge');
+
+      const MODE_NAMES = {
+        pomodoro: 'Pomodoro',
+        short: 'Short Break',
+        long: 'Long Break'
+      };
+
+      function updateFullscreenBadge() {
+        if (fullscreenModeBadge) {
+          fullscreenModeBadge.textContent = MODE_NAMES[state.mode] || 'Pomodoro';
+        }
+      }
 
       // Sync active tab on startup from saved state
       tabs.forEach(t => t.classList.toggle('active', t.dataset.mode === state.mode));
@@ -1636,20 +1765,20 @@
 
       // Live Device Date & Time
       const currentDateTimeEl = document.getElementById('currentDateTime');
-      const UZ_MONTHS = [
-        'yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun',
-        'iyul', 'avgust', 'sentabr', 'oktabr', 'noyabr', 'dekabr'
+      const EN_MONTHS = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
       ];
 
       function updateLiveDateTime() {
         if (!currentDateTimeEl) return;
         const now = new Date();
         const day = now.getDate();
-        const month = UZ_MONTHS[now.getMonth()];
+        const month = EN_MONTHS[now.getMonth()];
         const year = now.getFullYear();
         const hours = pad(now.getHours());
         const mins = pad(now.getMinutes());
-        currentDateTimeEl.textContent = `${day}-${month}, ${year} • ${hours}:${mins}`;
+        currentDateTimeEl.textContent = `${month} ${day}, ${year} • ${hours}:${mins}`;
       }
       updateLiveDateTime();
       setInterval(updateLiveDateTime, 1000);
@@ -1664,6 +1793,7 @@
         minutesEl.textContent = pad(Math.max(0, m));
         secondsEl.textContent = pad(Math.max(0, s));
         renderProgress();
+        updateFullscreenBadge();
       }
 
       function renderProgress(currentExact = state.remaining) {
@@ -1673,11 +1803,13 @@
       }
 
       function renderGoal() {
-        if (state.completed > state.goal) state.completed = state.goal;
+        if (state.completed > state.goal) {
+          state.goal = state.completed;
+        }
 
         goalCountEls.forEach(el => { el.textContent = state.goal; });
         progressTextEls.forEach(el => {
-          el.textContent = state.completed + ' / ' + state.goal + ' bajarildi';
+          el.textContent = state.completed + ' / ' + state.goal + ' completed';
         });
         if (miniProgress) {
           miniProgress.textContent = state.completed + ' / ' + state.goal;
@@ -1701,7 +1833,7 @@
         state.remaining = state.durations[mode];
         state.total = state.durations[mode];
         tabs.forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-        startBtn.textContent = 'Boshlash';
+        startBtn.textContent = 'Start';
         persistState();
         render();
       }
@@ -1716,7 +1848,7 @@
           cancelAnimationFrame(state.rafId);
           state.rafId = null;
         }
-        startBtn.textContent = 'Boshlash';
+        startBtn.textContent = 'Start';
         releaseWakeLock();
         render();
       }
@@ -1743,12 +1875,15 @@
           state.remaining = 0;
           stopTimer();
           playAlarm();
-          if (state.mode === 'pomodoro' && state.completed < state.goal) {
+          if (state.mode === 'pomodoro') {
             state.completed += 1;
+            if (state.completed > state.goal) {
+              state.goal = state.completed;
+            }
             persistState();
             renderGoal();
           }
-          // Auto-switch mode: Pomodoro -> Qisqa tanaffus, Qisqa tanaffus -> Pomodoro
+          // Auto-switch mode: Pomodoro -> Short Break, Short Break -> Pomodoro
           if (state.mode === 'pomodoro') {
             setMode('short');
           } else if (state.mode === 'short') {
@@ -1765,6 +1900,12 @@
           stopTimer();
           return;
         }
+        // If starting a Pomodoro and current completed meets or exceeds the goal, auto-increment goal!
+        if (state.mode === 'pomodoro' && state.completed >= state.goal) {
+          state.goal = state.completed + 1;
+          persistState();
+          renderGoal();
+        }
         if (state.remaining <= 0) {
           state.remaining = state.durations[state.mode];
           state.total = state.durations[state.mode];
@@ -1772,7 +1913,7 @@
         state.running = true;
         state.startTime = performance.now();
         state.startRemaining = state.remaining;
-        startBtn.textContent = 'To\'xtatish';
+        startBtn.textContent = 'Pause';
         requestWakeLock();
         if (state.rafId) cancelAnimationFrame(state.rafId);
         state.rafId = requestAnimationFrame(timerLoop);
@@ -1807,6 +1948,9 @@
         btn.addEventListener('click', () => {
           if (state.goal > 1) {
             state.goal -= 1;
+            if (state.completed > state.goal) {
+              state.completed = state.goal;
+            }
             persistState();
             renderGoal();
           }
@@ -1817,7 +1961,7 @@
 
       goalPlusBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-          if (state.goal < 12) {
+          if (state.goal < 48) {
             state.goal += 1;
             persistState();
             renderGoal();
@@ -2332,6 +2476,123 @@
 
       render();
       renderGoal();
+
+      // ========================================================
+      // 2nd Page 3-Language Switcher (Eng, Uz, Ru)
+      // ========================================================
+      const INFO_CONTENT = {
+        en: {
+          mainTitle: "Pomodoro Timer to Increase Your Productivity",
+          block1Title: "What is Pomodoro.uz?",
+          block1Text: "Pomodoro.uz is an app inspired by the Pomodoro Technique, a time management method developed by Francesco Cirillo. The goal of this app is to help you focus fully on any task, whether it's reading, writing, or programming.",
+          block2Title: "What is the Pomodoro Technique?",
+          block2Text: "The Pomodoro Technique was created by Francesco Cirillo as a more efficient way to work and study. This technique uses a timer to divide work into intervals, usually 25 minutes long, separated by short breaks. Each interval of work is called a \"pomodoro.\" The word means \"tomato\" in Italian, and is named after the tomato-shaped kitchen timer that Cirillo used when he was a university student.",
+          step1: "<strong>25 Minutes of Pure Focus:</strong> Start the timer and lock in. No distractions — just you and the goal!",
+          step2: "<strong>5-Minute Reward:</strong> When the timer rings, stop immediately. Stretch, grab some water, recharge your brain.",
+          step3: "<strong>Long Break After 4 Cycles (15–30 min):</strong> Completed 4 rounds? Take a well-deserved extended break!",
+          step4: "<strong>The Result:</strong> Great achievements are built on small 25-minute wins. Start right now!"
+        },
+        uz: {
+          mainTitle: "Samaradorligingizni oshirish uchun Pomodoro taymeri",
+          block1Title: "Pomodoro.uz nima?",
+          block1Text: "Pomodoro.uz — bu Franchesko Chirillo (Francesco Cirillo) tomonidan ishlab chiqilgan vaqtni boshqarish usuli bo'lgan Pomodoro texnikasidan ilhomlanib yaratilgan ilova. Ushbu ilovaning maqsadi sizga o'qish, yozish yoki dasturlash kabi har qanday vazifaga to'liq diqqatingizni jamlashga yordam berishdir.",
+          block2Title: "Pomodoro texnikasi nima?",
+          block2Text: "Pomodoro texnikasi Franchesko Chirillo tomonidan ishlash va o'qishning yanada samarali usuli sifatida yaratilgan. Bu texnikada ishni odatda 25 daqiqalik oraliqlarga bo'lish uchun taymerdan foydalaniladi va bu oraliqlar qisqa tanaffuslar bilan ajratiladi. Har bir ish oralig'i \"pomodoro\" deb ataladi. Bu so'z italyanchada \"pomidor\" degan ma'noni anglatib, Chirillo universitet talabasi bo'lgan paytida foydalangan pomidor shaklidagi oshxona taymeri sharafiga shunday nomlangan.",
+          step1: "<strong>25 daqiqa to'liq fokus:</strong> Taymerni yoqing va bor diqqatingizni ishga qarating. Chalg'ish yo'q — faqat siz va natija!",
+          step2: "<strong>5 daqiqa mukofot:</strong> Taymer jiringladimi, darhol to'xtang. O'rningizdan turing, suv iching, miyani qayta quvvatlang.",
+          step3: "<strong>4-bosqichdan so'ng katta dam (15–30 daqiqa):</strong> 4 ta seans ortda qoldi. Uzoqroq tanaffus oling, siz bunga munosibsiz!",
+          step4: "<strong>Natija:</strong> Katta yutuqlar aynan mana shunday 25 daqiqalik g'alabalardan quriladi. Hoziroq boshlang!"
+        },
+        ru: {
+          mainTitle: "Таймер Помодоро для повышения вашей продуктивности",
+          block1Title: "Что такое Pomodoro.uz?",
+          block1Text: "Pomodoro.uz — это приложение, вдохновленное техникой Помодоро, методом управления временем, разработанным Франческо Чирилло. Цель этого приложения — помочь вам полностью сосредоточиться на любой задаче, будь то чтение, письмо или программирование.",
+          block2Title: "Что такое техника Помодоро?",
+          block2Text: "Техника Помодоро была создана Франческо Чирилло как более эффективный способ работы и учебы. Эта техника использует таймер для разделения работы на интервалы, обычно по 25 минут, разделенные короткими перерывами. Каждый интервал работы называется «помодоро». Слово «помодоро» в переводе с итальянского означает «помидор», и оно названо в честь кухонного таймера в форме помидора, который Чирилло использовал, когда был студентом университета.",
+          step1: "<strong>25 минут чистого фокуса:</strong> Запустите таймер и выложитесь на максимум. Никаких отвлечений — только вы и результат!",
+          step2: "<strong>5 минут награды:</strong> Прозвенел таймер — сразу стоп. Встаньте, выпейте воды, перезагрузите мозг.",
+          step3: "<strong>Большой отдых после 4 кругов (15–30 минут):</strong> Закрыли 4 сессии? Сделайте долгую паузу, вы это заслужили!",
+          step4: "<strong>Результат:</strong> Большой успех строится из маленьких 25-минутных побед. Начните прямо сейчас!"
+        },
+        fa: {
+          mainTitle: "تایمر پومودورو برای افزایش بهره‌وری شما",
+          block1Title: "پومودورو دات یو زد (Pomodoro.uz) چیست؟",
+          block1Text: "پومودورو دات یو زد برنامه‌ای است با الهام از تکنیک پومودورو، یک روش مدیریت زمان که توسط فرانچسکو چیریلو ابداع شده است. هدف این برنامه کمک به شما برای تمرکز کامل بر روی هر کاری است، چه خواندن، نوشتن یا برنامه‌نویسی باشد.",
+          block2Title: "تکنیک پومودورو چیست؟",
+          block2Text: "تکنیک پومودورو توسط فرانچسکو چیریلو به عنوان روشی کارآمدتر برای کار و مطالعه ایجاد شد. این تکنیک از یک تایمر برای تقسیم کار به بازه‌های زمانی، معمولاً ۲۵ دقیقه‌ای، استفاده می‌کند که با استراحت‌های کوتاه از هم جدا می‌شوند. هر بازه کاری یک «پومودورو» نامیده می‌شود. این واژه در زبان ایتالیایی به معنای «گوجه‌فرنگی» است و به نام تایمر آشپزخانه گوجه‌فرنگی‌شکلی نامگذاری شده که چیریلو در دوران دانشجویی خود از آن استفاده می‌کرد.",
+          step1: "<strong>۲۵ دقیقه تمرکز خالص:</strong> تایمر را روشن کنید و تمام حواستان را به کار بسپارید. بدون حواس‌پرتی — فقط شما و هدف!",
+          step2: "<strong>۵ دقیقه پاداش:</strong> وقتی زنگ تایمر به صدا درآمد، فوراً متوقف شوید. بلند شوید، کمی آب بنوشید و ذهن خود را بازیابی کنید.",
+          step3: "<strong>استراحت طولانی بعد از ۴ دور (۱۵ تا ۳۰ دقیقه):</strong> ۴ جلسه را پشت سر گذاشتید؟ یک استراحت طولانی‌تر و شایسته داشته باشید!",
+          step4: "<strong>نتیجه:</strong> دستاوردهای بزرگ از همین پیروزی‌های کوچک ۲۵ دقیقه‌ای ساخته می‌شوند. همین حالا شروع کنید!"
+        },
+        ar: {
+          mainTitle: "مؤقت بومودورو لزيادة إنتاجيتك",
+          block1Title: "ما هو Pomodoro.uz؟",
+          block1Text: "تطبيق Pomodoro.uz مستوحى من تقنية بومودورو، وهي طريقة لإدارة الوقت طورها فرانشيسكو سيريلو. الهدف من هذا التطبيق هو مساعدتك على التركيز الكامل على أي مهمة، سواء كانت القراءة أو الكتابة أو البرمجة.",
+          block2Title: "ما هي تقنية بومودورو؟",
+          block2Text: "تم إنشاء تقنية بومودورو بواسطة فرانشيسكو سيريلو كطريقة أكثر كفاءة للعمل والدراسة. تعتمد هذه التقنية على استخدام مؤقت لتقسيم العمل إلى فترات زمنية، مدة كل منها عادةً 25 دقيقة، مفصولة بفترات راحة قصيرة. يُطلق على كل فترة عمل اسم \"بومودورو\". تعني الكلمة \"طماطم\" بالإيطالية، وقد سميت بهذا الاسم تيمناً بمؤقت المطبخ الذي كان على شكل طماطم واستخدمه سيريلو عندما كان طالباً جامعياً.",
+          step1: "<strong>25 دقيقة من التركيز الخالص:</strong> شغّل المؤقت وركّز بكل طاقتك. لا تشتيت للانتباه — أنت والهدف فقط!",
+          step2: "<strong>5 دقائق مكافأة:</strong> عندما يرن المؤقت، توقف فوراً. قف، اشرب بعض الماء، وأعد شحن طاقتك الذهنية.",
+          step3: "<strong>استراحة طويلة بعد 4 دورات (15–30 دقيقة):</strong> أتممت 4 جلسات؟ خذ استراحة ممتدة تستحقها!",
+          step4: "<strong>النتيجة:</strong> النجاحات الكبيرة تُبنى على مثل هذه الانتصارات الصغيرة التي مدتها 25 دقيقة. ابدأ الآن!"
+        }
+      };
+
+      const langBtns = document.querySelectorAll('.lang-btn');
+      const infoContainerEl = document.querySelector('.info-container');
+      const infoMainTitle = document.getElementById('infoMainTitle');
+      const infoBlock1Title = document.getElementById('infoBlock1Title');
+      const infoBlock1Text = document.getElementById('infoBlock1Text');
+      const infoBlock2Title = document.getElementById('infoBlock2Title');
+      const infoBlock2Text = document.getElementById('infoBlock2Text');
+      const step1Text = document.getElementById('step1Text');
+      const step2Text = document.getElementById('step2Text');
+      const step3Text = document.getElementById('step3Text');
+      const step4Text = document.getElementById('step4Text');
+
+      function setInfoLanguage(lang) {
+        if (!INFO_CONTENT[lang]) lang = 'en';
+        langBtns.forEach(btn => {
+          const isActive = btn.dataset.lang === lang;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        });
+        if (infoContainerEl) {
+          infoContainerEl.setAttribute('dir', (lang === 'fa' || lang === 'ar') ? 'rtl' : 'ltr');
+        }
+        const content = INFO_CONTENT[lang];
+        if (infoMainTitle && content.mainTitle) infoMainTitle.textContent = content.mainTitle;
+        if (infoBlock1Title) infoBlock1Title.textContent = content.block1Title;
+        if (infoBlock1Text) infoBlock1Text.innerHTML = content.block1Text;
+        if (infoBlock2Title) infoBlock2Title.textContent = content.block2Title;
+        if (infoBlock2Text) infoBlock2Text.innerHTML = content.block2Text;
+        if (step1Text) step1Text.innerHTML = content.step1;
+        if (step2Text) step2Text.innerHTML = content.step2;
+        if (step3Text) step3Text.innerHTML = content.step3;
+        if (step4Text) step4Text.innerHTML = content.step4;
+        try {
+          localStorage.setItem('pomodoro_info_lang', lang);
+        } catch (e) { }
+      }
+
+      langBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          setInfoLanguage(btn.dataset.lang);
+          playTickSound();
+          triggerHaptic();
+        });
+      });
+
+      try {
+        const savedLang = localStorage.getItem('pomodoro_info_lang');
+        if (savedLang && INFO_CONTENT[savedLang]) {
+          setInfoLanguage(savedLang);
+        } else {
+          setInfoLanguage('en');
+        }
+      } catch (e) {
+        setInfoLanguage('en');
+      }
 
       // Robust layout observers so reload / font-load / resize never misses exact dimensions
       if (window.ResizeObserver) {
