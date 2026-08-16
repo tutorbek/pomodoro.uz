@@ -102,6 +102,7 @@
       -moz-user-select: auto !important;
       -ms-user-select: auto !important;
       user-select: auto !important;
+      font-size: 16px;
     }
 
     *:focus,
@@ -722,7 +723,7 @@
       border-radius: 14px;
       color: var(--black);
       font-family: inherit;
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 500;
       letter-spacing: -0.01em;
       outline: none;
@@ -753,6 +754,7 @@
       background: var(--modal-close-bg);
       border-color: var(--modal-border);
       height: 44px;
+      font-size: 16px;
     }
 
     /* Settings trigger (opens Kunlik maqsad panel on mobile) */
@@ -876,8 +878,8 @@
     }
 
     .goal-modal {
-      touch-action: none;
-      overscroll-behavior: none;
+      touch-action: pan-y;
+      overscroll-behavior: contain;
     }
 
     .picker-modal {
@@ -2292,6 +2294,9 @@
       }
       function closeGoalSheet() {
         if (bottomSheet && bottomSheet.classList.contains('open')) {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+          }
           sheetBackdrop.classList.remove('open');
           bottomSheet.classList.remove('open');
           unlockScroll();
@@ -2303,11 +2308,6 @@
       if (sheetBackdrop) {
         sheetBackdrop.addEventListener('click', closeGoalSheet);
         sheetBackdrop.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-        }, { passive: false });
-      }
-      if (bottomSheet) {
-        bottomSheet.addEventListener('touchmove', (e) => {
           e.preventDefault();
         }, { passive: false });
       }
@@ -2477,6 +2477,9 @@
 
       function closeWheelPicker() {
         if (pickerSheet && pickerSheet.classList.contains('open')) {
+          if (document.activeElement && typeof document.activeElement.blur === 'function') {
+            document.activeElement.blur();
+          }
           document.body.classList.remove('picker-open');
           pickerBackdrop.classList.remove('open');
           pickerSheet.classList.remove('open');
