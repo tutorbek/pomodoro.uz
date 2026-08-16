@@ -54,8 +54,8 @@
         --bg: #202124;
         --gray-border: #3c4043;
         --gray-text: #9aa0a6;
-        --gray-track: #35363a;
-        --gray-track-2: #5f6368;
+        --gray-track: rgba(255, 255, 255, 0.12);
+        --gray-track-2: rgba(255, 255, 255, 0.32);
         --card-bg: #202124;
         --btn-secondary-bg: #292a2d;
         --btn-secondary-hover: #35363a;
@@ -80,12 +80,28 @@
       }
     }
 
-    * {
+    *,
+    *::before,
+    *::after,
+    html,
+    body {
       box-sizing: border-box;
       margin: 0;
       padding: 0;
       -webkit-tap-highlight-color: transparent !important;
-      -webkit-touch-callout: none;
+      -webkit-touch-callout: none !important;
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+    }
+
+    input,
+    textarea {
+      -webkit-user-select: auto !important;
+      -moz-user-select: auto !important;
+      -ms-user-select: auto !important;
+      user-select: auto !important;
     }
 
     *:focus,
@@ -99,10 +115,8 @@
     input,
     a {
       -webkit-tap-highlight-color: transparent !important;
-      -webkit-touch-callout: none;
+      -webkit-touch-callout: none !important;
       outline: none !important;
-      user-select: none;
-      -webkit-user-select: none;
     }
 
     button:focus,
@@ -351,6 +365,20 @@
       display: none !important;
     }
 
+    .fullscreen-top-bar {
+      display: none;
+    }
+
+    body.fullscreen-mode .fullscreen-top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      max-width: 90vw;
+    }
+
     .fullscreen-mode-badge {
       display: none;
     }
@@ -367,11 +395,46 @@
       background: var(--btn-secondary-bg);
       border: 1px solid var(--gray-border);
       border-radius: 999px;
-      margin-bottom: 24px;
       box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
       user-select: none;
       pointer-events: none;
       transition: color 0.2s ease, border-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .fullscreen-goal-badge {
+      display: none;
+    }
+
+    body.fullscreen-mode .fullscreen-goal-badge.has-note {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 6px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--black);
+      background: var(--btn-secondary-bg);
+      border: 1px solid var(--gray-border);
+      border-radius: 999px;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+      user-select: none;
+      max-width: min(400px, 85vw);
+      transition: color 0.2s ease, border-color 0.2s ease;
+    }
+
+    .fullscreen-goal-badge .goal-icon {
+      flex-shrink: 0;
+      opacity: 0.7;
+      color: var(--black);
+    }
+
+    .fullscreen-goal-badge .fullscreen-goal-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     body.fullscreen-mode .actions {
@@ -602,16 +665,24 @@
 
     .goal-status .reset-link {
       font-size: 14px;
+      font-weight: 500;
       color: var(--gray-text);
       text-decoration: underline;
+      text-underline-offset: 3px;
       cursor: pointer;
       background: none;
       border: none;
       font-family: inherit;
       white-space: nowrap;
+      padding: 2px 4px;
+      border-radius: 4px;
+      transition: color 0.2s ease, opacity 0.2s ease;
+      -webkit-appearance: none;
+      appearance: none;
     }
 
-    .goal-status .reset-link:hover {
+    .goal-status .reset-link:hover,
+    .goal-status .reset-link:active {
       color: var(--black);
     }
 
@@ -637,31 +708,117 @@
       background: var(--gray-track-2);
     }
 
+    .goal-input-wrap {
+      width: 100%;
+      margin-top: 2px;
+    }
+
+    .goal-note-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 16px;
+      background: var(--bg);
+      border: 1px solid var(--gray-border);
+      border-radius: 14px;
+      color: var(--black);
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.3s ease;
+      -webkit-appearance: none;
+      appearance: none;
+    }
+
+    .goal-note-input::placeholder {
+      color: var(--gray-text);
+      opacity: 0.75;
+      font-weight: 400;
+    }
+
+    .goal-note-input:focus {
+      border-color: var(--black);
+      box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      .goal-note-input:focus {
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.08);
+      }
+    }
+
+    .goal-modal .goal-note-input {
+      background: var(--modal-close-bg);
+      border-color: var(--modal-border);
+      height: 44px;
+    }
+
     /* Settings trigger (opens Kunlik maqsad panel on mobile) */
     .settings-trigger {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 8px;
+      justify-content: space-between;
+      gap: 14px;
       width: 100%;
-      min-height: 48px;
-      padding: 14px 20px;
+      min-height: 54px;
+      padding: 12px 20px;
       border: 1px solid var(--gray-border);
-      border-radius: 18px;
+      border-radius: 20px;
       background: var(--btn-secondary-bg);
       color: var(--black);
-      font-weight: 600;
-      font-size: 15px;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.12s ease;
+      box-sizing: border-box;
+      text-align: left;
+    }
+
+    .settings-trigger:active {
+      transform: scale(0.985);
+    }
+
+    .settings-trigger-left {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 2px;
+      min-width: 0;
+      flex: 1;
+    }
+
+    .settings-trigger-label {
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--black);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .settings-trigger-sub {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--gray-text);
+      line-height: 1.35;
+      letter-spacing: -0.005em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+      display: none;
+    }
+
+    .settings-trigger-sub.has-note {
+      display: block;
     }
 
     .settings-trigger .mini-progress {
       font-family: 'JetBrains Mono', ui-monospace, monospace;
       color: var(--gray-text);
       font-weight: 700;
-      font-size: 13px;
+      font-size: 13.5px;
+      flex-shrink: 0;
     }
 
     /* Desktop: goal panel shown inline, trigger + sheet chrome hidden */
@@ -684,6 +841,8 @@
       pointer-events: none;
       transition: opacity 0.16s ease;
       z-index: 40;
+      touch-action: none;
+      overscroll-behavior: none;
     }
 
     .sheet-backdrop.open {
@@ -716,6 +875,15 @@
       overflow: hidden;
     }
 
+    .goal-modal {
+      touch-action: none;
+      overscroll-behavior: none;
+    }
+
+    .picker-modal {
+      overscroll-behavior: contain;
+    }
+
     .goal-modal.open,
     .picker-modal.open {
       transform: translate(-50%, -50%) scale(1);
@@ -723,11 +891,34 @@
       pointer-events: auto;
     }
 
+    .goal-modal .goal-panel {
+      background: transparent !important;
+      border: none !important;
+      border-radius: 0 !important;
+      padding: 0 !important;
+      box-shadow: none !important;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin: 8px 0 14px 0;
+    }
+
+    .goal-modal .stepper {
+      background: var(--modal-close-bg);
+      border: 1px solid var(--modal-border);
+    }
+
+    .goal-modal .goal-status {
+      margin-left: 0;
+      justify-content: space-between;
+      width: 100%;
+    }
+
     .goal-modal-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 18px;
+      margin-bottom: 12px;
     }
 
     .goal-modal-title {
@@ -965,10 +1156,10 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 48px 24px;
-      padding-top: calc(48px + var(--safe-top));
-      padding-bottom: calc(48px + var(--safe-bottom));
+      justify-content: flex-start;
+      padding: 56px 24px;
+      padding-top: calc(56px + var(--safe-top));
+      padding-bottom: calc(56px + var(--safe-bottom));
       padding-left: calc(24px + var(--safe-left));
       padding-right: calc(24px + var(--safe-right));
       box-sizing: border-box;
@@ -998,21 +1189,36 @@
       border-radius: 999px;
       padding: 3px;
       gap: 2px;
+      max-width: 100%;
+      overflow-x: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       transition: background 0.3s ease, border-color 0.3s ease;
+    }
+
+    .lang-switcher::-webkit-scrollbar {
+      display: none;
     }
 
     .lang-btn {
       border: none;
       background: transparent;
       color: var(--gray-text);
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 600;
-      padding: 6px 14px;
+      line-height: 1;
+      height: 32px;
+      padding: 0 11px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border-radius: 999px;
       cursor: pointer;
       transition: background 0.2s ease, color 0.2s ease;
       user-select: none;
       letter-spacing: -0.01em;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .lang-btn:hover {
@@ -1182,19 +1388,24 @@
       }
 
       .goal-modal .goal-panel {
-        border: none;
-        padding: 0;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+        padding: 0 !important;
       }
 
-      /* Shared Mobile Modal position centered and elongated */
+      /* Shared Mobile Modal position centered */
       .goal-modal,
       .picker-modal {
         top: 50%;
         width: min(350px, calc(100vw - 32px));
-        min-height: 350px;
         padding: 22px 18px;
         border-radius: 30px;
         transform: translate(-50%, -46%) scale(0.95);
+      }
+
+      .picker-modal {
+        min-height: 350px;
       }
 
       .goal-modal.open,
@@ -1224,6 +1435,7 @@
       .info-section {
         min-height: 100vh;
         min-height: 100svh;
+        justify-content: flex-start;
         padding: 40px 16px;
         padding-top: calc(36px + var(--safe-top));
         padding-bottom: calc(40px + var(--safe-bottom));
@@ -1231,6 +1443,12 @@
 
       .info-container {
         gap: 22px;
+      }
+
+      .lang-btn {
+        padding: 0 9px;
+        font-size: 12px;
+        height: 30px;
       }
 
       .info-text {
@@ -1328,7 +1546,17 @@
       </div>
 
       <div class="timer-wrap" id="timerWrap">
-        <div class="fullscreen-mode-badge" id="fullscreenModeBadge">Pomodoro</div>
+        <div class="fullscreen-top-bar">
+          <div class="fullscreen-mode-badge" id="fullscreenModeBadge">Pomodoro</div>
+          <div class="fullscreen-goal-badge" id="fullscreenGoalBadge">
+            <svg class="goal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <circle cx="12" cy="12" r="6"></circle>
+              <circle cx="12" cy="12" r="2"></circle>
+            </svg>
+            <span class="fullscreen-goal-text" id="fullscreenGoalText"></span>
+          </div>
+        </div>
         <button class="fullscreen-toggle-btn" id="fullscreenToggleBtn" title="Full screen" aria-label="Full screen">
           <svg class="icon-expand" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
             stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -1366,11 +1594,17 @@
           </div>
         </div>
         <div class="progress-bars progress-bars-el"></div>
+        <div class="goal-input-wrap">
+          <input type="text" class="goal-note-input" maxlength="36" placeholder="What are you focusing on?" autocomplete="off" spellcheck="false" />
+        </div>
       </div>
 
       <!-- Mobile: trigger button that opens the bottom sheet -->
-      <button class="settings-trigger" id="settingsTrigger">
-        Daily goal
+      <button class="settings-trigger" id="settingsTrigger" aria-label="Open Daily Goal settings">
+        <div class="settings-trigger-left">
+          <span class="settings-trigger-label">Daily goal</span>
+          <span class="settings-trigger-sub" id="settingsTriggerSub"></span>
+        </div>
         <span class="mini-progress" id="miniProgress">0 / 4</span>
       </button>
 
@@ -1388,9 +1622,11 @@
         <div class="lang-switcher" role="tablist" aria-label="Language selector">
           <button class="lang-btn active" data-lang="en" role="tab" aria-selected="true">Eng</button>
           <button class="lang-btn" data-lang="uz" role="tab" aria-selected="false">Uz</button>
-          <button class="lang-btn" data-lang="ru" role="tab" aria-selected="false">Ru</button>
-          <button class="lang-btn" data-lang="fa" role="tab" aria-selected="false">Fa</button>
           <button class="lang-btn" data-lang="ar" role="tab" aria-selected="false">Ar</button>
+          <button class="lang-btn" data-lang="ru" role="tab" aria-selected="false">Ru</button>
+          <button class="lang-btn" data-lang="fr" role="tab" aria-selected="false">Fr</button>
+          <button class="lang-btn" data-lang="de" role="tab" aria-selected="false">De</button>
+          <button class="lang-btn" data-lang="fa" role="tab" aria-selected="false">Fa</button>
         </div>
       </div>
 
@@ -1452,8 +1688,7 @@
       <div class="goal-modal-title">Daily goal</div>
       <button class="goal-modal-close" id="goalModalClose" aria-label="Close">✕</button>
     </div>
-    <div class="goal-panel" id="goalPanelSheet"
-      style="border:none; padding:0; flex: 1; display: flex; flex-direction: column; justify-content: space-around; gap: 20px;">
+    <div class="goal-panel" id="goalPanelSheet">
       <div class="goal-row">
         <span class="goal-label">Daily goal:</span>
         <div class="stepper">
@@ -1462,11 +1697,14 @@
           <button class="goal-plus" aria-label="Increase">+</button>
         </div>
       </div>
-      <div class="goal-status" style="margin-left: 0; justify-content: space-between; width: 100%;">
+      <div class="goal-status">
         <span class="count-text progress-text">0 / 4 completed</span>
         <button class="reset-link progress-reset">Clear</button>
       </div>
       <div class="progress-bars progress-bars-el"></div>
+      <div class="goal-input-wrap">
+        <input type="text" class="goal-note-input" maxlength="36" placeholder="What are you focusing on?" autocomplete="off" spellcheck="false" />
+      </div>
     </div>
     <button class="picker-save-btn" id="goalSaveBtn">Done</button>
   </div>
@@ -1499,7 +1737,8 @@
         running: false,
         intervalId: null,
         goal: 4,
-        completed: 0
+        completed: 0,
+        goalNote: ''
       };
 
       function loadSavedState() {
@@ -1521,6 +1760,9 @@
             if (typeof data.completed === 'number' && data.completed >= 0) {
               state.completed = data.completed;
             }
+            if (typeof data.goalNote === 'string') {
+              state.goalNote = data.goalNote.slice(0, 36);
+            }
           }
         } catch (e) { }
         state.remaining = state.durations[state.mode];
@@ -1533,7 +1775,8 @@
             durations: state.durations,
             mode: state.mode,
             goal: state.goal,
-            completed: state.completed
+            completed: state.completed,
+            goalNote: state.goalNote
           }));
         } catch (e) { }
       }
@@ -1553,9 +1796,13 @@
       const progressTextEls = document.querySelectorAll('.progress-text');
       const progressResetBtns = document.querySelectorAll('.progress-reset');
       const progressBarsEls = document.querySelectorAll('.progress-bars-el');
+      const goalNoteInputs = document.querySelectorAll('.goal-note-input');
       const topProgressBar = document.getElementById('topProgressBar');
       const miniProgress = document.getElementById('miniProgress');
+      const settingsTriggerSub = document.getElementById('settingsTriggerSub');
       const fullscreenModeBadge = document.getElementById('fullscreenModeBadge');
+      const fullscreenGoalBadge = document.getElementById('fullscreenGoalBadge');
+      const fullscreenGoalText = document.getElementById('fullscreenGoalText');
 
       const MODE_NAMES = {
         pomodoro: 'Pomodoro',
@@ -1621,6 +1868,36 @@
         topProgressBar.style.transform = `scaleX(${fraction})`;
       }
 
+      function updateTriggerText() {
+        if (settingsTriggerSub) {
+          const trimmed = (state.goalNote || '').trim();
+          if (trimmed) {
+            settingsTriggerSub.textContent = trimmed;
+            settingsTriggerSub.title = trimmed;
+            settingsTriggerSub.classList.add('has-note');
+          } else {
+            settingsTriggerSub.textContent = '';
+            settingsTriggerSub.removeAttribute('title');
+            settingsTriggerSub.classList.remove('has-note');
+          }
+        }
+      }
+
+      function updateFullscreenGoal() {
+        if (fullscreenGoalBadge && fullscreenGoalText) {
+          const trimmed = (state.goalNote || '').trim();
+          if (trimmed) {
+            fullscreenGoalText.textContent = trimmed;
+            fullscreenGoalBadge.title = trimmed;
+            fullscreenGoalBadge.classList.add('has-note');
+          } else {
+            fullscreenGoalText.textContent = '';
+            fullscreenGoalBadge.removeAttribute('title');
+            fullscreenGoalBadge.classList.remove('has-note');
+          }
+        }
+      }
+
       function renderGoal() {
         if (state.completed > state.goal) {
           state.goal = state.completed;
@@ -1633,6 +1910,14 @@
         if (miniProgress) {
           miniProgress.textContent = state.completed + ' / ' + state.goal;
         }
+
+        goalNoteInputs.forEach(input => {
+          if (input.value !== (state.goalNote || '')) {
+            input.value = state.goalNote || '';
+          }
+        });
+        updateTriggerText();
+        updateFullscreenGoal();
 
         progressBarsEls.forEach(container => {
           container.innerHTML = '';
@@ -1790,9 +2075,30 @@
         });
       });
 
+      goalNoteInputs.forEach(input => {
+        input.addEventListener('input', (e) => {
+          state.goalNote = e.target.value.slice(0, 36);
+          goalNoteInputs.forEach(other => {
+            if (other !== e.target) other.value = state.goalNote;
+          });
+          persistState();
+          updateTriggerText();
+          updateFullscreenGoal();
+        });
+
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === 'Escape') {
+            e.preventDefault();
+            input.blur();
+          }
+        });
+      });
+
       progressResetBtns.forEach(btn => {
         btn.addEventListener('click', () => {
           state.completed = 0;
+          state.goalNote = '';
+          goalNoteInputs.forEach(input => { input.value = ''; });
           persistState();
           renderGoal();
         });
@@ -1920,20 +2226,66 @@
         } catch (err) { }
       }
 
+      // Centralized Background Scroll Lock Manager
+      let activeModalsCount = 0;
+      let savedScrollY = 0;
+
+      function lockScroll() {
+        if (activeModalsCount === 0) {
+          savedScrollY = window.scrollY || window.pageYOffset || document.documentElement.scrollTop || 0;
+          document.body.style.position = 'fixed';
+          document.body.style.top = `-${savedScrollY}px`;
+          document.body.style.left = '0';
+          document.body.style.right = '0';
+          document.body.style.width = '100%';
+          document.body.style.overflow = 'hidden';
+          document.documentElement.style.overflow = 'hidden';
+          document.body.classList.add('modal-open');
+        }
+        activeModalsCount++;
+      }
+
+      function unlockScroll() {
+        activeModalsCount = Math.max(0, activeModalsCount - 1);
+        if (activeModalsCount === 0) {
+          document.body.style.position = '';
+          document.body.style.top = '';
+          document.body.style.left = '';
+          document.body.style.right = '';
+          document.body.style.width = '';
+          document.body.style.overflow = '';
+          document.documentElement.style.overflow = '';
+          document.body.classList.remove('modal-open');
+          window.scrollTo(0, savedScrollY);
+        }
+      }
+
       // ---- Daily Goal Centered Modal ----
       function openGoalSheet() {
+        lockScroll();
         sheetBackdrop.classList.add('open');
         bottomSheet.classList.add('open');
       }
       function closeGoalSheet() {
-        sheetBackdrop.classList.remove('open');
-        bottomSheet.classList.remove('open');
+        if (bottomSheet && bottomSheet.classList.contains('open')) {
+          sheetBackdrop.classList.remove('open');
+          bottomSheet.classList.remove('open');
+          unlockScroll();
+        }
       }
       if (settingsTrigger) {
         settingsTrigger.addEventListener('click', openGoalSheet);
       }
       if (sheetBackdrop) {
         sheetBackdrop.addEventListener('click', closeGoalSheet);
+        sheetBackdrop.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+        }, { passive: false });
+      }
+      if (bottomSheet) {
+        bottomSheet.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+        }, { passive: false });
       }
       const goalModalClose = document.getElementById('goalModalClose');
       if (goalModalClose) {
@@ -2093,15 +2445,19 @@
 
         scrollToMinute(currentMins, false);
 
+        lockScroll();
         document.body.classList.add('picker-open');
         pickerBackdrop.classList.add('open');
         pickerSheet.classList.add('open');
       }
 
       function closeWheelPicker() {
-        document.body.classList.remove('picker-open');
-        pickerBackdrop.classList.remove('open');
-        pickerSheet.classList.remove('open');
+        if (pickerSheet && pickerSheet.classList.contains('open')) {
+          document.body.classList.remove('picker-open');
+          pickerBackdrop.classList.remove('open');
+          pickerSheet.classList.remove('open');
+          unlockScroll();
+        }
       }
 
       // ---- In-Browser Zen Fullscreen Mode ----
@@ -2114,6 +2470,8 @@
 
       function enterFullscreen() {
         document.body.classList.add('fullscreen-mode');
+        updateFullscreenBadge();
+        updateFullscreenGoal();
         setTimeout(renderProgress, 60);
       }
 
@@ -2161,11 +2519,24 @@
       }
 
       // Close when tapping backdrop (mobile & desktop)
-      pickerBackdrop.addEventListener('click', closeWheelPicker);
-      pickerBackdrop.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        closeWheelPicker();
-      }, { passive: false });
+      if (pickerBackdrop) {
+        pickerBackdrop.addEventListener('click', closeWheelPicker);
+        pickerBackdrop.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          closeWheelPicker();
+        }, { passive: false });
+        pickerBackdrop.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+        }, { passive: false });
+      }
+
+      if (pickerSheet) {
+        pickerSheet.addEventListener('touchmove', (e) => {
+          if (!e.target.closest('.wheel-scroll-container')) {
+            e.preventDefault();
+          }
+        }, { passive: false });
+      }
 
       // Close when tapping anywhere outside on screen / mobile
       document.addEventListener('pointerdown', (e) => {
@@ -2333,6 +2704,28 @@
           step3: "<strong>Большой отдых после 4 кругов (15–30 минут):</strong> Закрыли 4 сессии? Сделайте долгую паузу, вы это заслужили!",
           step4: "<strong>Результат:</strong> Большой успех строится из маленьких 25-минутных побед. Начните прямо сейчас!"
         },
+        fr: {
+          mainTitle: "Minuteur Pomodoro pour augmenter votre productivité",
+          block1Title: "Qu'est-ce que Pomodoro.uz ?",
+          block1Text: "Pomodoro.uz est une application inspirée de la méthode Pomodoro, une technique de gestion du temps développée par Francesco Cirillo. L'objectif de cette application est de vous aider à vous concentrer pleinement sur n'importe quelle tâche, qu'il s'agisse de lecture, d'écriture ou de programmation.",
+          block2Title: "Qu'est-ce que la méthode Pomodoro ?",
+          block2Text: "La méthode Pomodoro a été créée par Francesco Cirillo comme un moyen plus efficace de travailler et d'étudier. Cette technique utilise un minuteur pour diviser le travail en intervalles, généralement de 25 minutes, séparés par de courtes pauses. Chaque intervalle de travail est appelé un « pomodoro ». Ce mot signifie « tomate » en italien, et doit son nom au minuteur de cuisine en forme de tomate que Cirillo utilisait lorsqu'il était étudiant à l'université.",
+          step1: "<strong>25 minutes de concentration pure :</strong> Lancez le minuteur et plongez dans votre travail. Aucune distraction — juste vous et l'objectif !",
+          step2: "<strong>5 minutes de récompense :</strong> Dès que le minuteur sonne, arrêtez-vous immédiatement. Levez-vous, buvez de l'eau, rechargez votre cerveau.",
+          step3: "<strong>Grande pause après 4 cycles (15–30 min) :</strong> Vous avez terminé 4 sessions ? Accordez-vous une pause prolongée bien méritée !",
+          step4: "<strong>Le résultat :</strong> Les grandes réussites se construisent sur de petites victoires de 25 minutes. Commencez dès maintenant !"
+        },
+        de: {
+          mainTitle: "Pomodoro-Timer zur Steigerung Ihrer Produktivität",
+          block1Title: "Was ist Pomodoro.uz?",
+          block1Text: "Pomodoro.uz ist eine App, die von der Pomodoro-Technik inspiriert ist – einer Zeitmanagement-Methode, die von Francesco Cirillo entwickelt wurde. Das Ziel dieser App ist es, Ihnen dabei zu helfen, sich voll und ganz auf jede Aufgabe zu konzentrieren, sei es Lesen, Schreiben oder Programmieren.",
+          block2Title: "Was ist die Pomodoro-Technik?",
+          block2Text: "Die Pomodoro-Technik wurde von Francesco Cirillo entwickelt, um effektiver zu arbeiten und zu lernen. Bei dieser Technik wird die Arbeitszeit mit einem Timer in Intervalle von üblicherweise 25 Minuten unterteilt, die durch kurze Pausen getrennt sind. Jedes Arbeitsintervall wird als „Pomodoro“ bezeichnet. Das Wort bedeutet auf Italienisch „Tomate“ und ist nach der tomatenförmigen Küchenuhr benannt, die Cirillo als Universitätsstudent benutzte.",
+          step1: "<strong>25 Minuten purer Fokus:</strong> Starten Sie den Timer und konzentrieren Sie sich voll. Keine Ablenkungen — nur Sie und das Ziel!",
+          step2: "<strong>5 Minuten Belohnung:</strong> Wenn der Timer klingelt, stoppen Sie sofort. Aufstehen, Wasser trinken, den Kopf frei bekommen.",
+          step3: "<strong>Lange Pause nach 4 Zyklen (15–30 Min):</strong> 4 Runden geschafft? Gönnen Sie sich eine wohlverdiente längere Auszeit!",
+          step4: "<strong>Das Ergebnis:</strong> Große Erfolge entstehen durch kleine 25-Minuten-Etappen. Starten Sie jetzt!"
+        },
         fa: {
           mainTitle: "تایمر پومودورو برای افزایش بهره‌وری شما",
           block1Title: "پومودورو دات یو زد (Pomodoro.uz) چیست؟",
@@ -2436,6 +2829,36 @@
       }
 
       window.addEventListener('resize', renderProgress);
+
+      // Disable copying, cutting, dragging, and non-input text selection
+      document.addEventListener('copy', (e) => {
+        e.preventDefault();
+        return false;
+      });
+
+      document.addEventListener('cut', (e) => {
+        e.preventDefault();
+        return false;
+      });
+
+      document.addEventListener('dragstart', (e) => {
+        e.preventDefault();
+        return false;
+      });
+
+      document.addEventListener('selectstart', (e) => {
+        if (!e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+      });
+
+      document.addEventListener('contextmenu', (e) => {
+        if (!e.target.matches('input, textarea')) {
+          e.preventDefault();
+          return false;
+        }
+      });
     })();
   </script>
 
