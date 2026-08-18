@@ -3,14 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Pomodoro.uz — Minimalist Online Pomodoro Timer & Productivity Tracker</title>
 
   <!-- Primary SEO Meta Tags -->
   <meta name="title" content="Pomodoro.uz — Minimalist Online Pomodoro Timer & Productivity Tracker">
-  <meta name="description" content="Free, minimalist online Pomodoro timer designed to boost productivity, deep focus, and study habits. Features customizable intervals, 3D drum wheel picker, and daily goals.">
-  <meta name="keywords" content="pomodoro, pomodoro timer, online pomodoro timer, pomodoro texnikasi, pomodoro taymer, focus timer, study timer, productivity timer, time management, pomodoro uz, pomodoro online">
-  <meta name="author" content="tutorbek">
+  <meta name="description"
+    content="Free, minimalist online Pomodoro timer designed to boost productivity, deep focus, and study habits. Features customizable intervals, 3D drum wheel picker, and daily goals.">
+  <meta name="keywords"
+    content="pomodoro, pomodoro timer, online pomodoro timer, pomodoro texnikasi, pomodoro taymer, focus timer, study timer, productivity timer, time management, pomodoro uz, pomodoro online">
+  <meta name="author" content="topdev.uz">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://pomodoro.uz/">
 
@@ -28,7 +31,8 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://pomodoro.uz/">
   <meta property="og:title" content="Pomodoro.uz — Minimalist Online Pomodoro Timer & Productivity Tracker">
-  <meta property="og:description" content="Free, distraction-free online Pomodoro timer to boost productivity and deep focus. Clean 3D drum picker, audio & haptic feedback, and multi-language support.">
+  <meta property="og:description"
+    content="Free, distraction-free online Pomodoro timer to boost productivity and deep focus. Clean 3D drum picker, audio & haptic feedback, and multi-language support.">
   <meta property="og:site_name" content="Pomodoro.uz">
   <meta property="og:locale" content="en_US">
   <meta property="og:locale:alternate" content="uz_UZ">
@@ -42,7 +46,8 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:url" content="https://pomodoro.uz/">
   <meta name="twitter:title" content="Pomodoro.uz — Minimalist Online Pomodoro Timer & Productivity Tracker">
-  <meta name="twitter:description" content="Free, distraction-free online Pomodoro timer to boost productivity and deep focus. Clean 3D drum picker, audio & haptic feedback, and daily goals.">
+  <meta name="twitter:description"
+    content="Free, distraction-free online Pomodoro timer to boost productivity and deep focus. Clean 3D drum picker, audio & haptic feedback, and daily goals.">
   <meta name="twitter:creator" content="@tutorbek">
 
   <!-- Theme & Mobile App Capabilities -->
@@ -87,8 +92,8 @@
         ],
         "author": {
           "@type": "Person",
-          "name": "tutorbek",
-          "url": "https://t.me/tutorbek"
+          "name": "topdev.uz",
+          "url": "https://topdev.uz"
         }
       },
       {
@@ -235,6 +240,7 @@
       -moz-user-select: none !important;
       -ms-user-select: none !important;
       user-select: none !important;
+      touch-action: manipulation;
     }
 
     input,
@@ -293,6 +299,25 @@
       clip: rect(0, 0, 0, 0) !important;
       white-space: nowrap !important;
       border: 0 !important;
+    }
+
+    /* Hide scrollbars globally across all browsers while maintaining smooth scrolling */
+    html,
+    body,
+    * {
+      scrollbar-width: none !important;
+      /* Firefox */
+      -ms-overflow-style: none !important;
+      /* IE & Edge */
+    }
+
+    ::-webkit-scrollbar,
+    *::-webkit-scrollbar {
+      display: none !important;
+      /* Chrome, Safari, Opera, iOS */
+      width: 0 !important;
+      height: 0 !important;
+      background: transparent !important;
     }
 
     body {
@@ -363,12 +388,12 @@
       color: var(--gray-text);
       border-radius: 999px;
       cursor: pointer;
-      transition: background 0.25s ease, color 0.25s ease;
       letter-spacing: -0.01em;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 6px;
+      transition: none;
     }
 
     .tab.active {
@@ -446,7 +471,7 @@
       justify-content: center;
       user-select: none;
       padding: 36px 28px;
-      touch-action: pan-y;
+      touch-action: pan-y manipulation;
       cursor: pointer;
       border-radius: 24px;
       border: 1px solid var(--gray-border);
@@ -701,8 +726,7 @@
       -moz-user-select: none;
       -ms-user-select: none;
       user-select: none;
-      touch-action: pan-y;
-      transition: transform 0.1s ease;
+      touch-action: pan-y manipulation;
       color: var(--black);
       pointer-events: none;
     }
@@ -716,7 +740,6 @@
       display: inline-block;
       min-width: 2ch;
       text-align: center;
-      transition: transform 0.08s ease;
       pointer-events: none;
     }
 
@@ -931,86 +954,9 @@
       }
     }
 
-    .goal-modal .goal-note-input {
-      background: var(--modal-close-bg);
-      border-color: var(--modal-border);
-      height: 44px;
-      font-size: 16px;
-    }
-
-    /* Settings trigger (opens Kunlik maqsad panel on mobile) */
-    .settings-trigger {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      width: 100%;
-      min-height: 54px;
-      padding: 12px 20px;
-      border: 1px solid var(--gray-border);
-      border-radius: 20px;
-      background: var(--btn-secondary-bg);
-      color: var(--black);
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, transform 0.12s ease;
-      box-sizing: border-box;
-      text-align: left;
-    }
-
-    .settings-trigger:active {
-      transform: scale(0.985);
-    }
-
-    .settings-trigger-left {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 2px;
-      min-width: 0;
-      flex: 1;
-    }
-
-    .settings-trigger-label {
-      font-size: 15px;
-      font-weight: 700;
-      color: var(--black);
-      line-height: 1.25;
-      letter-spacing: -0.01em;
-    }
-
-    .settings-trigger-sub {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--gray-text);
-      line-height: 1.35;
-      letter-spacing: -0.005em;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 100%;
-      display: none;
-    }
-
-    .settings-trigger-sub.has-note {
-      display: block;
-    }
-
-    .settings-trigger .mini-progress {
-      font-family: 'JetBrains Mono', ui-monospace, monospace;
-      color: var(--gray-text);
-      font-weight: 700;
-      font-size: 13.5px;
-      flex-shrink: 0;
-    }
-
-    /* Desktop: goal panel shown inline, trigger + sheet chrome hidden */
+    /* Desktop & Mobile: goal panel shown inline */
     .goal-panel--inline {
       display: flex;
-    }
-
-    .settings-trigger {
-      display: none;
     }
 
     /* Backdrop */
@@ -1018,12 +964,10 @@
       position: fixed;
       inset: 0;
       background: var(--backdrop-bg);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
-      transition: opacity 0.16s ease, visibility 0.16s ease;
+      transition: opacity 0.12s ease, visibility 0.12s ease;
       z-index: 40;
       touch-action: none;
       overscroll-behavior: none;
@@ -1036,115 +980,43 @@
     }
 
     /* ========================================================
-       Shared Centered Modal Dialogs (Baraban & Daily Goal)
+       Centered Drum Wheel Picker Modal
        ======================================================== */
-    .goal-modal,
     .picker-modal {
       position: fixed;
       top: 50%;
       left: 50%;
       width: min(390px, calc(100vw - 32px));
-      transform: translate(-50%, -48%) scale(0.96);
+      transform: translate(-50%, -50%) scale(0.96);
       background: var(--modal-bg);
       border-radius: 32px;
       padding: 22px 20px;
       box-shadow: var(--modal-shadow);
       border: 1px solid var(--modal-border);
       opacity: 0;
-      visibility: hidden !important;
-      pointer-events: none !important;
-      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.14s ease, visibility 0.18s ease;
+      visibility: hidden;
+      pointer-events: none;
+      transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.1s ease, visibility 0.12s ease;
       z-index: 50;
       display: flex;
       flex-direction: column;
       box-sizing: border-box;
       overflow: hidden;
+      will-change: transform, opacity;
+      overscroll-behavior: contain;
     }
 
-    .goal-modal:not(.open),
     .picker-modal:not(.open),
-    .goal-modal:not(.open) *,
     .picker-modal:not(.open) * {
       pointer-events: none !important;
       visibility: hidden !important;
     }
 
-    .goal-modal {
-      touch-action: pan-y;
-      overscroll-behavior: contain;
-    }
-
-    .picker-modal {
-      overscroll-behavior: contain;
-    }
-
-    .goal-modal.open,
     .picker-modal.open {
       transform: translate(-50%, -50%) scale(1);
       opacity: 1;
-      visibility: visible !important;
-      pointer-events: auto !important;
-    }
-
-    .goal-modal .goal-panel {
-      background: transparent !important;
-      border: none !important;
-      border-radius: 0 !important;
-      padding: 0 !important;
-      box-shadow: none !important;
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-      margin: 8px 0 14px 0;
-    }
-
-    .goal-modal .stepper {
-      background: var(--modal-close-bg);
-      border: 1px solid var(--modal-border);
-    }
-
-    .goal-modal .goal-status {
-      margin-left: 0;
-      justify-content: space-between;
-      width: 100%;
-    }
-
-    .goal-modal-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 12px;
-    }
-
-    .goal-modal-title {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: -0.01em;
-      color: var(--black);
-    }
-
-    .goal-modal-close {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--modal-close-bg);
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--black);
-      font-size: 14px;
-      font-weight: 700;
-      transition: background 0.15s ease, transform 0.1s ease;
-    }
-
-    .goal-modal-close:hover {
-      background: var(--modal-close-hover);
-    }
-
-    .goal-modal-close:active {
-      transform: scale(0.92);
+      visibility: visible;
+      pointer-events: auto;
     }
 
     /* Hide underlying timer digits when Baraban modal is open */
@@ -1152,7 +1024,7 @@
     body.picker-open .timer-badge-hint {
       opacity: 0 !important;
       pointer-events: none;
-      transition: opacity 0.15s ease;
+      transition: opacity 0.1s ease;
     }
 
     /* 3D Wheel Viewport */
@@ -1188,7 +1060,7 @@
       padding: 124px 0;
       /* (300 - 52) / 2 = 124px */
       box-sizing: border-box;
-      touch-action: pan-y;
+      touch-action: pan-y manipulation;
       z-index: 2;
       cursor: grab;
     }
@@ -1574,41 +1446,61 @@
         font-size: 15px;
       }
 
-      .goal-panel--inline {
-        display: none;
-      }
-
-      .settings-trigger {
-        display: flex;
-      }
-
       .fullscreen-toggle-btn,
       .fullscreen-exit-btn {
         display: none !important;
       }
 
-      .goal-modal .goal-panel {
-        background: transparent !important;
-        border: none !important;
-        border-radius: 0 !important;
-        padding: 0 !important;
+      /* Mobile Minimalist Inline Goal Panel */
+      .goal-panel--inline {
+        display: flex;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        padding: 4px 0 0 0;
+        gap: 14px;
+        box-shadow: none;
       }
 
-      /* Shared Mobile Modal position centered */
-      .goal-modal,
+      .goal-panel--inline .goal-row {
+        gap: 8px 12px;
+      }
+
+      .goal-panel--inline .goal-label {
+        font-size: 15px;
+      }
+
+      .goal-panel--inline .stepper {
+        padding: 6px 14px;
+        gap: 12px;
+      }
+
+      .goal-panel--inline .goal-status {
+        margin-left: auto;
+        gap: 10px;
+      }
+
+      .goal-panel--inline .goal-status .count-text {
+        font-size: 14px;
+      }
+
+      .goal-panel--inline .goal-note-input {
+        background: var(--modal-close-bg);
+        border: 1px solid var(--modal-border);
+        height: 44px;
+        font-size: 16px;
+      }
+
+      /* Centered Drum Picker Modal on mobile */
       .picker-modal {
         top: 50%;
         width: min(350px, calc(100vw - 32px));
         padding: 22px 18px;
         border-radius: 30px;
-        transform: translate(-50%, -46%) scale(0.95);
-      }
-
-      .picker-modal {
+        transform: translate(-50%, -50%) scale(0.96);
         min-height: 350px;
       }
 
-      .goal-modal.open,
       .picker-modal.open {
         transform: translate(-50%, -50%) scale(1);
       }
@@ -1735,24 +1627,15 @@
       </div>
 
       <div class="time-header-widget">
-        <div class="ticks-group">
-          <div class="tick short"></div>
-          <div class="tick mid"></div>
-          <div class="tick center"></div>
-        </div>
         <div class="current-datetime" id="currentDateTime"></div>
-        <div class="ticks-group">
-          <div class="tick center"></div>
-          <div class="tick mid"></div>
-          <div class="tick short"></div>
-        </div>
       </div>
 
       <div class="timer-wrap" id="timerWrap">
         <div class="fullscreen-top-bar">
           <div class="fullscreen-mode-badge" id="fullscreenModeBadge">Pomodoro</div>
           <div class="fullscreen-goal-badge" id="fullscreenGoalBadge">
-            <svg class="goal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg class="goal-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+              stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
               <circle cx="12" cy="12" r="10"></circle>
               <circle cx="12" cy="12" r="6"></circle>
               <circle cx="12" cy="12" r="2"></circle>
@@ -1782,7 +1665,7 @@
         <button class="btn btn-secondary fullscreen-exit-btn" id="fullscreenExitBtn">Exit</button>
       </div>
 
-      <!-- Desktop / tablet: goal panel shown inline -->
+      <!-- Daily Goal Panel (Inline for all screens) -->
       <div class="goal-panel goal-panel--inline" id="goalPanelInline">
         <div class="goal-row">
           <span class="goal-label">Daily goal:</span>
@@ -1798,18 +1681,10 @@
         </div>
         <div class="progress-bars progress-bars-el"></div>
         <div class="goal-input-wrap">
-          <input type="text" class="goal-note-input" maxlength="36" placeholder="What are you focusing on?" autocomplete="off" spellcheck="false" />
+          <input type="text" class="goal-note-input" maxlength="36" placeholder="What are you focusing on?"
+            autocomplete="off" autocorrect="off" autocapitalize="sentences" spellcheck="false" enterkeyhint="done" />
         </div>
       </div>
-
-      <!-- Mobile: trigger button that opens the bottom sheet -->
-      <button class="settings-trigger" id="settingsTrigger" aria-label="Open Daily Goal settings">
-        <div class="settings-trigger-left">
-          <span class="settings-trigger-label">Daily goal</span>
-          <span class="settings-trigger-sub" id="settingsTriggerSub"></span>
-        </div>
-        <span class="mini-progress" id="miniProgress">0 / 4</span>
-      </button>
 
     </div>
   </section>
@@ -1875,8 +1750,8 @@
       <!-- Footer -->
       <footer class="info-footer">
         <div class="footer-credit">
-          Made with 🥷🏻 by <a href="https://t.me/tutorbek" target="_blank" rel="noopener noreferrer"
-            class="tutorbek-link">tutorbek</a>
+          Made by <a href="https://topdev.uz" target="_blank" rel="noopener noreferrer"
+            class="tutorbek-link">Topdev.uz</a>
         </div>
         <div class="footer-copyright">
           ©Pomodoro Uz 2019-2026. All Rights Reserved.
@@ -1884,34 +1759,6 @@
       </footer>
     </div>
   </section>
-
-  <!-- Mobile Daily Goal Centered Modal -->
-  <div class="sheet-backdrop" id="sheetBackdrop"></div>
-  <div class="goal-modal" id="bottomSheet" role="dialog" aria-modal="true">
-    <div class="goal-modal-header">
-      <div class="goal-modal-title">Daily goal</div>
-      <button class="goal-modal-close" id="goalModalClose" aria-label="Close">✕</button>
-    </div>
-    <div class="goal-panel" id="goalPanelSheet">
-      <div class="goal-row">
-        <span class="goal-label">Daily goal:</span>
-        <div class="stepper">
-          <button class="goal-minus" aria-label="Decrease">−</button>
-          <span class="count goal-count">4</span>
-          <button class="goal-plus" aria-label="Increase">+</button>
-        </div>
-      </div>
-      <div class="goal-status">
-        <span class="count-text progress-text">0 / 4 completed</span>
-        <button class="reset-link progress-reset">Clear</button>
-      </div>
-      <div class="progress-bars progress-bars-el"></div>
-      <div class="goal-input-wrap">
-        <input type="text" class="goal-note-input" maxlength="36" placeholder="What are you focusing on?" autocomplete="off" spellcheck="false" />
-      </div>
-    </div>
-    <button class="picker-save-btn" id="goalSaveBtn">Done</button>
-  </div>
 
   <!-- iOS / Apple Watch Style Centered Drum Wheel Modal -->
   <div class="sheet-backdrop" id="pickerBackdrop"></div>
@@ -2003,8 +1850,6 @@
       const progressBarsEls = document.querySelectorAll('.progress-bars-el');
       const goalNoteInputs = document.querySelectorAll('.goal-note-input');
       const topProgressBar = document.getElementById('topProgressBar');
-      const miniProgress = document.getElementById('miniProgress');
-      const settingsTriggerSub = document.getElementById('settingsTriggerSub');
       const fullscreenModeBadge = document.getElementById('fullscreenModeBadge');
       const fullscreenGoalBadge = document.getElementById('fullscreenGoalBadge');
       const fullscreenGoalText = document.getElementById('fullscreenGoalText');
@@ -2023,11 +1868,6 @@
 
       // Sync active tab on startup from saved state
       tabs.forEach(t => t.classList.toggle('active', t.dataset.mode === state.mode));
-
-      // Bottom sheet elements (Daily Goal)
-      const settingsTrigger = document.getElementById('settingsTrigger');
-      const sheetBackdrop = document.getElementById('sheetBackdrop');
-      const bottomSheet = document.getElementById('bottomSheet');
 
       // Wheel Picker Elements
       const pickerBackdrop = document.getElementById('pickerBackdrop');
@@ -2074,20 +1914,7 @@
         topProgressBar.style.transform = `scaleX(${fraction})`;
       }
 
-      function updateTriggerText() {
-        if (settingsTriggerSub) {
-          const trimmed = (state.goalNote || '').trim();
-          if (trimmed) {
-            settingsTriggerSub.textContent = trimmed;
-            settingsTriggerSub.title = trimmed;
-            settingsTriggerSub.classList.add('has-note');
-          } else {
-            settingsTriggerSub.textContent = '';
-            settingsTriggerSub.removeAttribute('title');
-            settingsTriggerSub.classList.remove('has-note');
-          }
-        }
-      }
+
 
       function updateFullscreenGoal() {
         if (fullscreenGoalBadge && fullscreenGoalText) {
@@ -2113,16 +1940,12 @@
         progressTextEls.forEach(el => {
           el.textContent = state.completed + ' / ' + state.goal + ' completed';
         });
-        if (miniProgress) {
-          miniProgress.textContent = state.completed + ' / ' + state.goal;
-        }
 
         goalNoteInputs.forEach(input => {
           if (input.value !== (state.goalNote || '')) {
             input.value = state.goalNote || '';
           }
         });
-        updateTriggerText();
         updateFullscreenGoal();
 
         progressBarsEls.forEach(container => {
@@ -2245,6 +2068,8 @@
       tabs.forEach(tab => {
         tab.addEventListener('click', () => {
           setMode(tab.dataset.mode);
+          playTickSound();
+          triggerHaptic();
         });
       });
 
@@ -2294,7 +2119,6 @@
             if (other !== e.target) other.value = state.goalNote;
           });
           persistState();
-          updateTriggerText();
           updateFullscreenGoal();
         });
 
@@ -2491,40 +2315,6 @@
         }
       }
 
-      // ---- Daily Goal Centered Modal ----
-      function openGoalSheet() {
-        lockScroll();
-        sheetBackdrop.classList.add('open');
-        bottomSheet.classList.add('open');
-      }
-      function closeGoalSheet() {
-        if (bottomSheet && bottomSheet.classList.contains('open')) {
-          if (document.activeElement && typeof document.activeElement.blur === 'function') {
-            document.activeElement.blur();
-          }
-          sheetBackdrop.classList.remove('open');
-          bottomSheet.classList.remove('open');
-          unlockScroll();
-        }
-      }
-      if (settingsTrigger) {
-        settingsTrigger.addEventListener('click', openGoalSheet);
-      }
-      if (sheetBackdrop) {
-        sheetBackdrop.addEventListener('click', closeGoalSheet);
-        sheetBackdrop.addEventListener('touchmove', (e) => {
-          e.preventDefault();
-        }, { passive: false });
-      }
-      const goalModalClose = document.getElementById('goalModalClose');
-      if (goalModalClose) {
-        goalModalClose.addEventListener('click', closeGoalSheet);
-      }
-      const goalSaveBtn = document.getElementById('goalSaveBtn');
-      if (goalSaveBtn) {
-        goalSaveBtn.addEventListener('click', closeGoalSheet);
-      }
-
       // ========================================================
       // iOS / Apple Watch Native-Fluid Drum Wheel Implementation
       // ========================================================
@@ -2718,10 +2508,7 @@
           document.body.classList.remove('picker-open');
           pickerBackdrop.classList.remove('open');
           pickerSheet.classList.remove('open');
-          for (let i = 0; i < wheelItemEls.length; i++) {
-            wheelItemEls[i].style.pointerEvents = 'none';
-            wheelItemEls[i].style.visibility = 'hidden';
-          }
+          updateWheel3D();
           unlockScroll();
         }
       }
@@ -2812,11 +2599,6 @@
             closeWheelPicker();
           }
         }
-        if (bottomSheet && bottomSheet.classList.contains('open')) {
-          if (!bottomSheet.contains(e.target) && (!settingsTrigger || !settingsTrigger.contains(e.target))) {
-            closeGoalSheet();
-          }
-        }
       });
 
       // Close on Enter or Esc keyboard keys
@@ -2834,12 +2616,28 @@
             closeWheelPicker();
           }
         }
-        if (bottomSheet && bottomSheet.classList.contains('open')) {
-          if (e.key === 'Escape') {
+      });
+
+      // Prevent mobile double-tap zoom & multi-touch pinch zoom
+      let lastTouchEndTime = 0;
+      document.addEventListener('touchstart', (e) => {
+        if (e.touches.length > 1) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      document.addEventListener('touchend', (e) => {
+        const now = Date.now();
+        if (now - lastTouchEndTime <= 300) {
+          if (!e.target.closest('button, a, input, textarea, select, .stepper button, .nav-btn, .timer-btn, .pill, .lang-btn, .audio-menu-item')) {
             e.preventDefault();
-            closeGoalSheet();
           }
         }
+        lastTouchEndTime = now;
+      }, { passive: false });
+
+      document.addEventListener('gesturestart', (e) => {
+        e.preventDefault();
       });
 
       // Swipe down gesture to dismiss on mobile
